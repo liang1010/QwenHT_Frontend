@@ -1,0 +1,277 @@
+.users-container {
+  height: calc(100vh - 175px); /* Full viewport height */
+  display: flex;
+  flex-direction: column;
+  flex: 1; /* Take up available space in parent */
+}
+
+mat-card {
+  height: 100%;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  flex: 1; /* Take up available space */
+  margin: 0; /* Remove any default margins */
+}
+
+mat-card-content {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  /* Contain any overflow */
+  gap: 0;
+  /* Remove gap to maximize space usage */
+  flex: 1; /* Take up remaining space after card header */
+  height: calc(100% - 64px); /* Account for card header height */
+}
+
+.grid-section {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  /* Don't allow scrolling in grid section */
+  flex: 0 0 260px; /* Fixed height: 6 rows total (192px) + smaller controls (~98px) */
+}
+
+.table-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px; /* Reduced margin */
+  padding: 4px 8px; /* Added padding to ensure proper spacing */
+}
+
+.table-actions {
+  display: flex;
+  gap: 6px; /* Reduced gap */
+  align-items: center;
+  flex-wrap: nowrap; /* Prevent wrapping to keep buttons on one line */
+}
+
+/* Ensure action buttons match the smaller pagination controls */
+.table-actions .mat-mdc-button,
+.table-actions .mat-mdc-raised-button {
+  height: 28px !important;
+  min-height: 28px !important;
+  line-height: 28px !important;
+  font-size: 12px !important;
+  padding: 0 12px !important;
+}
+
+/* Specific styling for save and cancel buttons */
+.table-actions .mat-mdc-raised-button[color="primary"]:not([mattooltip]) {
+  /* This is for the save button */
+  background-color: #28a745 !important;
+  color: white !important;
+}
+
+.table-actions .mat-mdc-raised-button[color="basic"] {
+  /* This is for the cancel button */
+  background-color: #6c757d !important;
+  color: white !important;
+}
+
+.table-actions {
+  display: flex;
+  gap: 8px; /* Reduced gap */
+  align-items: center;
+}
+
+.table-responsive {
+  overflow-y: hidden; /* Remove scrollbar from table itself */
+  height: 192px; /* 5 rows of data (160px) + 1 header row (32px) = 192px */
+  min-height: 192px;
+  max-height: 192px;
+  flex: 0 0 192px; /* Explicitly set the flex property */
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+}
+
+mat-paginator {
+  margin-top: 8px;
+  font-size: 12px;
+  height: 32px !important;
+}
+
+.mat-mdc-paginator {
+  height: 32px !important;
+}
+
+.mat-mdc-paginator-page-size,
+.mat-mdc-paginator-range-label {
+  font-size: 12px !important;
+  line-height: 32px !important;
+}
+
+.mat-mdc-paginator-page-size-select {
+  font-size: 12px !important;
+}
+
+.mat-mdc-paginator-button {
+  height: 28px !important;
+  width: 28px !important;
+  line-height: 28px !important;
+}
+
+mat-table {
+  width: 100%;
+}
+
+.form-section {
+  flex: 1; /* Take remaining space */
+  padding-top: 12px;
+  border-top: 1px solid #e0e0e0;
+  display: flex;
+  flex-direction: column;
+  min-height: 0; /* Allow flex item to shrink below content height */
+  overflow: hidden; /* Contain content within the section */
+}
+
+.form-section-content {
+  flex: 1;
+  /* overflow-y: auto; Allow scrolling within the form section if needed */
+  padding: 0 12px 12px; /* Add bottom padding for spacing */
+}
+
+.form-section h3 {
+  margin-bottom: 12px;
+  font-size: 1.1rem;
+  font-weight: 500;
+}
+
+.user-form {
+  margin: 0 auto;
+  padding: 0 12px;
+}
+
+
+
+/* Make buttons match the compact design */
+.mat-mdc-button, .mat-mdc-raised-button {
+  height: 32px !important;
+  min-height: 32px !important;
+  line-height: 32px !important;
+  font-size: 12px !important;
+  padding: 0 16px !important;
+}
+
+.mat-mdc-table .mdc-data-table__header-row {
+  height: 32px;
+}
+
+.mat-mdc-table .mdc-data-table__row {
+  height: 32px;
+}
+
+/* Table styling */
+mat-table {
+  width: 100%;
+  table-layout: fixed; /* Ensures fixed column widths */
+}
+
+/* Column width classes */
+.email-column {
+  width: 30%;
+}
+
+.first-name-column {
+  width: 20%;
+}
+
+.last-name-column {
+  width: 20%;
+}
+
+.roles-column {
+  width: 30%;
+}
+
+/* Sorting styles */
+.sortable-header {
+  cursor: pointer;
+  user-select: none;
+  position: relative;
+  padding-right: 24px !important; /* Make space for the sort icon */
+}
+
+.sort-icon {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 16px !important;
+  width: 16px !important;
+  height: 16px !important;
+}
+
+/* Ensure table cells also respect the fixed width */
+.mat-mdc-cell, .mat-mdc-header-cell {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Search field alignment */
+.search-field {
+  min-width: 200px;
+  margin-right: 16px; /* Add space between search and buttons */
+  align-self: center; /* Align vertically with other buttons */
+}
+
+.table-actions {
+  display: flex;
+  gap: 6px; /* Reduced gap */
+  align-items: center; /* Align items vertically */
+  flex-wrap: wrap; /* Allow wrapping if needed */
+}
+
+.selected-row,
+.mat-mdc-row.selected-row {
+  background-color: #ff7000 !important;
+  /* Solid orange background to match sidebar */
+  color: white !important;
+}
+
+tr.mat-row,
+tr.mat-mdc-row {
+  cursor: pointer;
+  height: 32px !important;
+  /* Ensure consistent row height */
+  user-select: none;
+  /* Prevent text selection when clicking */
+}
+
+/* Make sure the entire row area is clickable */
+.mat-mdc-row,
+.mat-row {
+  position: relative;
+  box-sizing: border-box;
+}
+
+/* Ensure the table cells have proper height and clickable area */
+.mat-mdc-cell,
+.mat-cell {
+  height: 32px;
+  /* display: flex; */
+  align-items: center;
+  padding: 0 8px !important;
+  /* Ensure consistent padding */
+  color: inherit !important;
+  /* Ensure text color is inherited */
+}
+
+/* Make sure the row highlighting covers the full width */
+.mat-mdc-row:hover,
+.mat-row:hover {
+  background-color: rgba(255, 112, 0, 0.1) !important;
+  /* Solid light orange background */
+  color: var(--mdc-theme-primary, #ff7000) !important;
+}
+
+/* Override hover effect for selected rows to maintain selected color */
+.mat-mdc-row.selected-row:hover,
+.mat-row.selected-row:hover {
+  background-color: #ff7000 !important;
+  /* Keep selected color */
+  color: white !important;
+  /* Maintain white text */
+}

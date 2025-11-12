@@ -1,0 +1,43 @@
+.private-layout {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden; /* Prevent scrollbars on the main layout */
+}
+
+.layout-content {
+  flex: 1;
+  display: flex;
+  overflow: hidden; /* Prevent scrollbars on the layout content */
+}
+
+.content-area {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0; /* Allows flex item to shrink below content size */
+}
+
+.main-content {
+  flex: 1;
+  padding: 0px 20px 20px 20px;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto; /* Allow vertical scrolling within main content */
+}
+
+.content-wrapper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.layout-footer {
+  flex-shrink: 0;
+}
+
+@media (max-width: 768px) {
+  .content-area {
+    /* On mobile, the sidebar will overlay, so content area takes full width */
+  }
+}

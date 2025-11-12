@@ -1,0 +1,15 @@
+@use '@angular/material' as mat;
+@include mat.core();
+
+/* You can add global styles to this file, and also import other style files */
+
+/* Global styles for Angular Material and Bootstrap integration */
+html, body {
+  height: 100%;
+  overflow: hidden; /* Contain scrollbars within the application */
+}
+
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}

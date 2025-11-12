@@ -1,0 +1,56 @@
+@use '@angular/material' as mat;
+
+// Define Shopee-style orange theme
+$shopee-orange: (
+  50: #fff7ec,
+  100: #ffeae6,
+  200: #ffdbcc,
+  300: #ffbc7c,
+  400: #ff9f33,
+  500: #ff7000,
+  600: #ff6700,
+  700: #ff5a00,
+  800: #ff4f00,
+  900: #ff3a00,
+  A100: #ffccaa,
+  A200: #ff9966,
+  A400: #ff6633,
+  A700: #ff4d00,
+  contrast: (
+    50: rgba(black, 0.87),
+    100: rgba(black, 0.87),
+    200: rgba(black, 0.87),
+    300: rgba(black, 0.87),
+    400: rgba(white, 0.87),
+    500: white,
+    600: white,
+    700: white,
+    800: white,
+    900: white,
+    A100: rgba(black, 0.87),
+    A200: rgba(white, 0.87),
+    A400: white,
+    A700: white,
+  )
+);
+
+$primary: mat.define-palette($shopee-orange);
+$accent: mat.define-palette(mat.$blue-palette, A200, A100, A400);
+$warn: mat.define-palette(mat.$red-palette);
+
+// Define density level (-1, -2, -3 for more compact)
+$compact-density: -5;
+
+// Create the theme object
+$theme: mat.define-light-theme((
+  color: (
+    primary: $primary,
+    accent: $accent,
+    warn: $warn,
+  ),
+  density: $compact-density
+));
+// Apply the theme
+@include mat.all-component-themes($theme);
+
+@include mat.core();
