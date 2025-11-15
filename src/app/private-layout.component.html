@@ -1,18 +1,23 @@
 <div class="private-layout">
+  <!-- Progress bar at the top -->
+  <mat-progress-bar *ngIf="showProgressBar" mode="indeterminate">
+  </mat-progress-bar>
+
+  <!-- Overlay when progress bar is shown -->
+  <div class="overlay" *ngIf="showProgressBar"></div>
+
+  <app-navbar></app-navbar>
   <div class="layout-content">
     <app-sidebar></app-sidebar>
-    <div class="content-area">
-      <app-navbar></app-navbar>
-      <main class="main-content">
-        <div class="content-wrapper">
-          <router-outlet></router-outlet>
-        </div>
-      </main>
-      <footer class="layout-footer">
-        <div class="container py-3 text-center">
-          <p>&copy; 2025 QwenHT Identity Management. All rights reserved.</p>
-        </div>
-      </footer>
-    </div>
+    <main class="main-content">
+      <div class="content-wrapper">
+        <router-outlet></router-outlet>
+      </div>
+    </main>
   </div>
+  <footer class="layout-footer">
+    <div class="container py-3 text-center">
+      <p>&copy; 2025 QwenHT Identity Management. All rights reserved.</p>
+    </div>
+  </footer>
 </div>
