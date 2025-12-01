@@ -64,8 +64,8 @@ export class ManageMenusComponent implements OnInit, OnDestroy {
       { field: 'category', header: 'Category' },
       { field: 'footMins', header: 'Foot Mins' },
       { field: 'bodyMins', header: 'Body Mins' },
-      { field: 'staffCommissionPrice', header: 'Staff' },
-      { field: 'excommCommissionPrice', header: 'Excomm' },
+      { field: 'staffCommission', header: 'StaffCommission' },
+      { field: 'extraCommission', header: 'ExtraCommission' },
       { field: 'price', header: 'Price' },
       { field: 'status', header: 'Status' }
     ];
@@ -116,8 +116,8 @@ export class ManageMenusComponent implements OnInit, OnDestroy {
       status: 1, // Default to active (1 = Active, 0 = Inactive)
       footMins: 0,
       bodyMins: 0,
-      staffCommissionPrice: 0,
-      excommCommissionPrice: 0,
+      staffCommission: 0,
+      extraCommission: 0,
       price: 0
     };
     this.submitted = false;

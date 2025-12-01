@@ -5,8 +5,8 @@ export interface Menu {
   category?: string;
   footMins?: number;
   bodyMins?: number;
-  staffCommissionPrice?: number;
-  excommCommissionPrice?: number;
+  staffCommission?: number;
+  extraCommission?: number;
   price?: number;
   status?: number; // 0 = Inactive, 1 = Active
   createdBy?: string;

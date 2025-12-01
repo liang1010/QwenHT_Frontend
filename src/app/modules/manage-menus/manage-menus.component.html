@@ -44,8 +44,8 @@
             <th pSortableColumn="category">Category <p-sortIcon field="category"></p-sortIcon></th>
             <th pSortableColumn="footMins">Foot Mins <p-sortIcon field="footMins"></p-sortIcon></th>
             <th pSortableColumn="bodyMins">Body Mins <p-sortIcon field="bodyMins"></p-sortIcon></th>
-            <th pSortableColumn="footMins">Staff <p-sortIcon field="staff"></p-sortIcon></th>
-            <th pSortableColumn="bodyMins">Excomm <p-sortIcon field="excomm"></p-sortIcon></th>
+            <th pSortableColumn="footMins">Staff Comm. <p-sortIcon field="staff"></p-sortIcon></th>
+            <th pSortableColumn="bodyMins">Extra Comm. <p-sortIcon field="extraCommission"></p-sortIcon></th>
             <th pSortableColumn="price">Price <p-sortIcon field="price"></p-sortIcon></th>
             <th pSortableColumn="status">Status <p-sortIcon field="status"></p-sortIcon></th>
             <th style="width: 8rem">Actions</th>
@@ -75,12 +75,12 @@
               {{menu.bodyMins}}
             </td>
             <td style="width:10%; min-width:6rem;">
-              <span class="p-column-title">Staff</span>
-              {{menu.staffCommissionPrice | currency}}
+              <span class="p-column-title">Staff Comm.</span>
+              {{menu.staffCommission | currency}}
             </td>
             <td style="width:10%; min-width:6rem;">
-              <span class="p-column-title">Excomm</span>
-              {{menu.excommCommissionPrice | currency}}
+              <span class="p-column-title">Extra Comm.</span>
+              {{menu.extraCommission | currency}}
             </td>
             <td style="width:10%; min-width:6rem;">
               <span class="p-column-title">Price</span>
@@ -136,12 +136,12 @@
             <p-inputNumber id="bodyMins" [(ngModel)]="menu.bodyMins" [min]="0" [max]="9999" [showButtons]="true"></p-inputNumber>
           </div>
           <div class="field">
-            <label for="staffCommissionPrice">Staff Commission Price</label>
-            <p-inputNumber id="staffCommissionPrice" [(ngModel)]="menu.staffCommissionPrice" mode="currency" currency="USD" [locale]="'en-US'"></p-inputNumber>
+            <label for="staffCommission">Staff Commission</label>
+            <p-inputNumber id="staffCommission" [(ngModel)]="menu.staffCommission" mode="currency" currency="USD" [locale]="'en-US'"></p-inputNumber>
           </div>
           <div class="field">
-            <label for="excommCommissionPrice">Excomm Commission Price</label>
-            <p-inputNumber id="excommCommissionPrice" [(ngModel)]="menu.excommCommissionPrice" mode="currency" currency="USD" [locale]="'en-US'"></p-inputNumber>
+            <label for="extraCommission">Extra Commission</label>
+            <p-inputNumber id="extraCommission" [(ngModel)]="menu.extraCommission" mode="currency" currency="USD" [locale]="'en-US'"></p-inputNumber>
           </div>
           <div class="field">
             <label for="price">Price *</label>
