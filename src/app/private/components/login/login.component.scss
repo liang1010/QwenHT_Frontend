@@ -1,5 +1,0 @@
-@use '@angular/material' as mat;
-
-.my-custom-button {
-  @include mat.button-density(5);
-}

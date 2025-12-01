@@ -1,0 +1,23 @@
+<div class="card">
+  <!-- <h4>Assign Roles to Navigation Item</h4> -->
+  <p>Assign roles that can access "{{ config.data?.item?.name }}"</p>
+
+  <form [formGroup]="roleForm" (ngSubmit)="onSubmit()" class="p-fluid">
+    <div class="field">
+      <label for="roles">Select Roles</label>
+      <p-multiSelect inputId="roles" formControlName="roles" [options]="availableRoles" placeholder="Select roles"
+        [showToggleAll]="false" [maxSelectedLabels]="6" appendTo="body">
+      </p-multiSelect>
+      <small *ngIf="roleForm.get('roles')?.invalid && roleForm.get('roles')?.touched" class="p-error">
+        At least one role is required
+      </small>
+    </div>
+
+    <div class="flex justify-content-end gap-2 mt-4">
+      <button type="button" pButton pRipple label="Cancel" class="p-button-text" (click)="onCancel()">
+      </button>
+      <button type="submit" pButton pRipple label="Assign Roles" [disabled]="roleForm.invalid">
+      </button>
+    </div>
+  </form>
+</div>

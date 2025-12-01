@@ -1,16 +1,14 @@
 import { NgModule } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { AppRoutingModule } from './app-routing.module';
+import { HashLocationStrategy, LocationStrategy } from '@angular/common';
 import { AppComponent } from './app.component';
+import { AppRoutingModule } from './app-routing.module';
+import { AppNotfoundComponent } from './layout/app-notfound/app-notfound.component';
+import { AppLayoutModule } from './layout/app-layout/app.layout.module';
 import { JwtModule } from '@auth0/angular-jwt';
-import { PublicLayoutComponent } from './public/public-layout.component';
-import { PrivateLayoutComponent } from './private-layout.component';
-import { MaterialModule } from './material.module';
-import { CoreModule } from './private/core/core.module';
-import { SharedModule } from './private/shared/shared.module';
-
-// Bootstrap is included via angular.json
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import { BrowserModule } from '@angular/platform-browser';
+import { ProgressBarModule } from 'primeng/progressbar';
+import { AuthInterceptor } from './interceptors/auth.interceptor';
 
 export function tokenGetter() {
   return localStorage.getItem('access_token');
@@ -19,16 +17,13 @@ export function tokenGetter() {
 @NgModule({
   declarations: [
     AppComponent,
-    PublicLayoutComponent,
-    PrivateLayoutComponent
+    AppNotfoundComponent
   ],
   imports: [
-    BrowserModule,
-    BrowserAnimationsModule,
     AppRoutingModule,
-    SharedModule,
-    CoreModule,
-    MaterialModule,
+    AppLayoutModule,
+    ProgressBarModule,
+    BrowserModule,
     JwtModule.forRoot({
       config: {
         tokenGetter: tokenGetter,
@@ -37,7 +32,14 @@ export function tokenGetter() {
       }
     })
   ],
-  providers: [],
+  providers: [
+    { provide: LocationStrategy, useClass: HashLocationStrategy },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptor,
+      multi: true
+    }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

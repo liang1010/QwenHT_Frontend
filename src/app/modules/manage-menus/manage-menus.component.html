@@ -1,0 +1,190 @@
+<div class="grid">
+  <div class="col-12">
+    <div class="card px-6 py-6">
+      <p-toast></p-toast>
+      <p-toolbar styleClass="mb-4">
+        <ng-template pTemplate="left">
+          <div class="my-2">
+            <button pButton pRipple label="New" icon="pi pi-plus" class="p-button-success mr-2"
+              (click)="openNew()"></button>
+            <button pButton pRipple label="Delete" icon="pi pi-trash" class="p-button-danger"
+              (click)="deleteSelectedMenus()" [disabled]="!selectedMenus || !selectedMenus.length"></button>
+          </div>
+        </ng-template>
+
+        <ng-template pTemplate="right">
+          <button pButton pRipple label="Export" icon="pi pi-upload" class="p-button-help"
+            (click)="dt.exportCSV()"></button>
+        </ng-template>
+      </p-toolbar>
+
+      <p-table #dt [value]="menus" [columns]="cols" responsiveLayout="scroll" [rows]="rows"
+        [globalFilterFields]="['name','description','code']" [paginator]="true"
+        [rowsPerPageOptions]="rowsPerPageOptions" [showCurrentPageReport]="true" [totalRecords]="totalRecords"
+        [lazy]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+        [(selection)]="selectedMenus" selectionMode="multiple" [rowHover]="true" dataKey="id" (onPage)="onPage($event)"
+        (onSort)="onSort($event)" [loading]="loading">
+        <ng-template pTemplate="caption">
+          <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
+            <h5 class="m-0">Manage Menus</h5>
+            <span class="block mt-2 md:mt-0 p-input-icon-left">
+              <i class="pi pi-search"></i>
+              <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Search..."
+                class="w-full sm:w-auto" [value]="globalFilter" />
+            </span>
+          </div>
+        </ng-template>
+        <ng-template pTemplate="header">
+          <tr>
+            <th style="width: 3rem">
+              <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+            </th>
+            <th pSortableColumn="code">Code <p-sortIcon field="code"></p-sortIcon></th>
+            <th pSortableColumn="description">Description <p-sortIcon field="description"></p-sortIcon></th>
+            <th pSortableColumn="category">Category <p-sortIcon field="category"></p-sortIcon></th>
+            <th pSortableColumn="footMins">Foot Mins <p-sortIcon field="footMins"></p-sortIcon></th>
+            <th pSortableColumn="bodyMins">Body Mins <p-sortIcon field="bodyMins"></p-sortIcon></th>
+            <th pSortableColumn="footMins">Staff <p-sortIcon field="staff"></p-sortIcon></th>
+            <th pSortableColumn="bodyMins">Excomm <p-sortIcon field="excomm"></p-sortIcon></th>
+            <th pSortableColumn="price">Price <p-sortIcon field="price"></p-sortIcon></th>
+            <th pSortableColumn="status">Status <p-sortIcon field="status"></p-sortIcon></th>
+            <th style="width: 8rem">Actions</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-menu>
+          <tr>
+            <td>
+              <p-tableCheckbox [value]="menu"></p-tableCheckbox>
+            </td>
+            <td style="width:14%; min-width:10rem;"><span class="p-column-title">Code</span>
+              {{menu.code}}
+            </td>
+            <td style="width:14%; min-width:10rem;"><span class="p-column-title">Description</span>
+              {{menu.description}}
+            </td>
+            <td style="width:14%; min-width:10rem;">
+              <span class="p-column-title">Category</span>
+              {{menu.category}}
+            </td>
+            <td style="width:10%; min-width:6rem;">
+              <span class="p-column-title">Foot Mins</span>
+              {{menu.footMins}}
+            </td>
+            <td style="width:10%; min-width:6rem;">
+              <span class="p-column-title">Body Mins</span>
+              {{menu.bodyMins}}
+            </td>
+            <td style="width:10%; min-width:6rem;">
+              <span class="p-column-title">Staff</span>
+              {{menu.staffCommissionPrice | currency}}
+            </td>
+            <td style="width:10%; min-width:6rem;">
+              <span class="p-column-title">Excomm</span>
+              {{menu.excommCommissionPrice | currency}}
+            </td>
+            <td style="width:10%; min-width:6rem;">
+              <span class="p-column-title">Price</span>
+              {{menu.price | currency}}
+            </td>
+            <td style="width:10%; min-width:6rem;">
+              <span class="p-column-title">Status</span>
+              <p-tag [value]="menu.status === 1 ? 'Active' : 'Inactive'"
+                [severity]="menu.status === 1 ? 'success' : 'danger'"></p-tag>
+            </td>
+            <td>
+              <div class="flex">
+                <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2"
+                  (click)="editMenu(menu)"></button>
+                <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-danger"
+                  (click)="deleteMenu(menu)"></button>
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+
+    <p-dialog [(visible)]="menuDialog" [style]="{width: '500px', 'max-height': '600px', 'overflow': 'auto' }"
+      header="Menu Details" [modal]="true" class="p-fluid">
+      <ng-template pTemplate="content">
+        <div class="p-4">
+          <div class="field">
+            <label for="code">Code *</label>
+            <input type="text" pInputText id="code" [(ngModel)]="menu.code" required
+              [ngClass]="{'ng-invalid ng-dirty': submitted && !menu.code}" />
+            <small class="ng-dirty ng-invalid" *ngIf="submitted && !menu.code">Code is required.</small>
+          </div>
+          <div class="field">
+            <label for="description">Description *</label>
+            <input type="text" pInputText id="description" [(ngModel)]="menu.description" required
+              [ngClass]="{'ng-invalid ng-dirty': submitted && !menu.description}" />
+            <small class="ng-dirty ng-invalid" *ngIf="submitted && !menu.description">Description is required.</small>
+          </div>
+          <div class="field">
+            <label for="category">Category *</label>
+            <p-dropdown id="category" [options]="[{label: 'Product', value: 'PRODUCT'}, {label: 'Treatment', value: 'TREATMENT'}]"
+              [(ngModel)]="menu.category" optionLabel="label" optionValue="value" placeholder="Select Category"
+              [ngClass]="{'ng-invalid ng-dirty': submitted && !menu.category}"></p-dropdown>
+            <small class="ng-dirty ng-invalid" *ngIf="submitted && !menu.category">Category is required.</small>
+          </div>
+          <div class="field">
+            <label for="footMins">Foot Minutes</label>
+            <p-inputNumber id="footMins" [(ngModel)]="menu.footMins" [min]="0" [max]="9999" [showButtons]="true"></p-inputNumber>
+          </div>
+          <div class="field">
+            <label for="bodyMins">Body Minutes</label>
+            <p-inputNumber id="bodyMins" [(ngModel)]="menu.bodyMins" [min]="0" [max]="9999" [showButtons]="true"></p-inputNumber>
+          </div>
+          <div class="field">
+            <label for="staffCommissionPrice">Staff Commission Price</label>
+            <p-inputNumber id="staffCommissionPrice" [(ngModel)]="menu.staffCommissionPrice" mode="currency" currency="USD" [locale]="'en-US'"></p-inputNumber>
+          </div>
+          <div class="field">
+            <label for="excommCommissionPrice">Excomm Commission Price</label>
+            <p-inputNumber id="excommCommissionPrice" [(ngModel)]="menu.excommCommissionPrice" mode="currency" currency="USD" [locale]="'en-US'"></p-inputNumber>
+          </div>
+          <div class="field">
+            <label for="price">Price *</label>
+            <p-inputNumber id="price" [(ngModel)]="menu.price" mode="currency" currency="USD" [locale]="'en-US'"
+              [ngClass]="{'ng-invalid ng-dirty': submitted && menu.price === undefined}"></p-inputNumber>
+            <small class="ng-dirty ng-invalid" *ngIf="submitted && menu.price === undefined">Price is required.</small>
+          </div>
+          <div class="field">
+            <label for="status">Status</label>
+            <p-dropdown id="status" [options]="[{label: 'Active', value: 1}, {label: 'Inactive', value: 0}]"
+              [(ngModel)]="menu.status" optionLabel="label" optionValue="value" placeholder="Select Status"></p-dropdown>
+          </div>
+        </div>
+      </ng-template>
+
+      <ng-template pTemplate="footer">
+        <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
+        <button pButton pRipple label="Save" icon="pi pi-check" (click)="saveMenu()"></button>
+      </ng-template>
+    </p-dialog>
+
+    <p-dialog [(visible)]="deleteMenuDialog" header="Confirm" [modal]="true" [style]="{width:'450px'}">
+      <div class="flex align-items-center justify-content-center">
+        <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
+        <span *ngIf="menu">Are you sure you want to delete <b>{{menu.code}}</b>?</span>
+      </div>
+      <ng-template pTemplate="footer">
+        <button pButton pRipple icon="pi pi-times" class="p-button-text" label="No"
+          (click)="deleteMenuDialog = false"></button>
+        <button pButton pRipple icon="pi pi-check" label="Yes" (click)="confirmDelete()"></button>
+      </ng-template>
+    </p-dialog>
+
+    <p-dialog [(visible)]="deleteMenusDialog" header="Confirm" [modal]="true" [style]="{width:'450px'}">
+      <div class="flex align-items-center justify-content-center">
+        <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
+        <span>Are you sure you want to delete selected menus?</span>
+      </div>
+      <ng-template pTemplate="footer">
+        <button pButton pRipple icon="pi pi-times" class="p-button-text" label="No"
+          (click)="deleteMenusDialog = false"></button>
+        <button pButton pRipple icon="pi pi-check" label="Yes" (click)="confirmDeleteSelected()"></button>
+      </ng-template>
+    </p-dialog>
+  </div>
+</div>

@@ -1,0 +1,191 @@
+<div class="grid">
+  <div class="col-12">
+    <div class="card px-6 py-6">
+      <p-toast></p-toast>
+      <p-toolbar styleClass="mb-4">
+        <ng-template pTemplate="left">
+          <div class="my-2">
+            <button pButton pRipple label="New" icon="pi pi-plus" class="p-button-success mr-2"
+              (click)="openNew()"></button>
+            <button pButton pRipple label="Delete" icon="pi pi-trash" class="p-button-danger"
+              (click)="deleteSelectedOptionValues()" [disabled]="!selectedOptionValues || !selectedOptionValues.length"></button>
+          </div>
+        </ng-template>
+
+        <ng-template pTemplate="right">
+          <button pButton pRipple label="Export" icon="pi pi-upload" class="p-button-help"
+            (click)="dt.exportCSV()"></button>
+        </ng-template>
+      </p-toolbar>
+
+      <div class="accordion-container">
+        <p-accordion>
+          <p-accordionTab *ngFor="let category of getCategories()" [header]="category">
+            <p-table [value]="groupedOptionValues[category]" [columns]="cols" responsiveLayout="scroll" [rows]="10"
+              [paginator]="true" [rowsPerPageOptions]="[5, 10, 20]" [showCurrentPageReport]="false"
+              [(selection)]="selectedOptionValues" selectionMode="multiple" [rowHover]="true" dataKey="id"
+              [loading]="loading">
+              <ng-template pTemplate="header">
+                <tr>
+                  <th style="width: 3rem">
+                    <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+                  </th>
+                  <th pSortableColumn="value">Value <p-sortIcon field="value"></p-sortIcon></th>
+                  <th>Description</th>
+                  <th pSortableColumn="isActive">Active <p-sortIcon field="isActive"></p-sortIcon></th>
+                  <th style="width: 8rem">Actions</th>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-optionValue>
+                <tr>
+                  <td>
+                    <p-tableCheckbox [value]="optionValue"></p-tableCheckbox>
+                  </td>
+                  <td style="width:14%; min-width:10rem;"><span class="p-column-title">Value</span>
+                    {{optionValue.value}}
+                  </td>
+                  <td style="width:14%; min-width:10rem;">
+                    <span class="p-column-title">Description</span>
+                    {{optionValue.description}}
+                  </td>
+                  <td style="width:10%; min-width:6rem;">
+                    <span class="p-column-title">Active</span>
+                    <p-tag [value]="optionValue.isActive ? 'Active' : 'Inactive'"
+                      [severity]="optionValue.isActive ? 'success' : 'danger'"></p-tag>
+                  </td>
+                  <td>
+                    <div class="flex">
+                      <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2"
+                        (click)="editOptionValue(optionValue)"></button>
+                      <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-danger"
+                        (click)="deleteOptionValue(optionValue)"></button>
+                    </div>
+                  </td>
+                </tr>
+              </ng-template>
+            </p-table>
+          </p-accordionTab>
+        </p-accordion>
+      </div>
+      <!-- Hidden table for original functionality when no grouping is desired -->
+      <p-table #dt [value]="optionValues" [columns]="cols" responsiveLayout="scroll" [rows]="rows"
+        [globalFilterFields]="['category','value','description']" [paginator]="true"
+        [rowsPerPageOptions]="rowsPerPageOptions" [showCurrentPageReport]="true" [totalRecords]="totalRecords"
+        [lazy]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+        [(selection)]="selectedOptionValues" selectionMode="multiple" [rowHover]="true" dataKey="id" (onPage)="onPage($event)"
+        (onSort)="onSort($event)" [loading]="loading" [style]="{display: 'none'}">
+        <ng-template pTemplate="caption">
+          <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
+            <h5 class="m-0">Manage Option Values</h5>
+            <span class="block mt-2 md:mt-0 p-input-icon-left">
+              <i class="pi pi-search"></i>
+              <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Search..."
+                class="w-full sm:w-auto" [value]="globalFilter" />
+            </span>
+          </div>
+        </ng-template>
+        <ng-template pTemplate="header">
+          <tr>
+            <th style="width: 3rem">
+              <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+            </th>
+            <th pSortableColumn="category">Category <p-sortIcon field="category"></p-sortIcon></th>
+            <th pSortableColumn="value">Value <p-sortIcon field="value"></p-sortIcon></th>
+            <th>Description</th>
+            <th pSortableColumn="isActive">Active <p-sortIcon field="isActive"></p-sortIcon></th>
+            <th style="width: 8rem">Actions</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-optionValue>
+          <tr>
+            <td>
+              <p-tableCheckbox [value]="optionValue"></p-tableCheckbox>
+            </td>
+            <td style="width:14%; min-width:10rem;"><span class="p-column-title">Category</span>
+              {{optionValue.category}}
+            </td>
+            <td style="width:14%; min-width:10rem;"><span class="p-column-title">Value</span>
+              {{optionValue.value}}
+            </td>
+            <td style="width:14%; min-width:10rem;">
+              <span class="p-column-title">Description</span>
+              {{optionValue.description}}
+            </td>
+            <td style="width:10%; min-width:6rem;">
+              <span class="p-column-title">Active</span>
+              <p-tag [value]="optionValue.isActive ? 'Active' : 'Inactive'"
+                [severity]="optionValue.isActive ? 'success' : 'danger'"></p-tag>
+            </td>
+            <td>
+              <div class="flex">
+                <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2"
+                  (click)="editOptionValue(optionValue)"></button>
+                <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-danger"
+                  (click)="deleteOptionValue(optionValue)"></button>
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+
+    <!-- OptionValue Dialog -->
+    <p-dialog [(visible)]="optionValueDialog" [style]="{'width': '500px', 'max-height': '600px', 'overflow': 'auto' }"
+      header="Option Value Details" [modal]="true" class="p-fluid">
+      <ng-template pTemplate="content">
+        <div class="p-4">
+          <div class="field">
+            <label for="category">Category *</label>
+            <input type="text" pInputText id="category" [(ngModel)]="optionValue.category" required
+              [ngClass]="{'ng-invalid ng-dirty': submitted && !optionValue.category}" />
+            <small class="ng-dirty ng-invalid" *ngIf="submitted && !optionValue.category">Category is required.</small>
+          </div>
+          <div class="field">
+            <label for="value">Value *</label>
+            <input type="text" pInputText id="value" [(ngModel)]="optionValue.value" required
+              [ngClass]="{'ng-invalid ng-dirty': submitted && !optionValue.value}" />
+            <small class="ng-dirty ng-invalid" *ngIf="submitted && !optionValue.value">Value is required.</small>
+          </div>
+          <div class="field">
+            <label for="description">Description</label>
+            <input type="text" pInputText id="description" [(ngModel)]="optionValue.description" />
+          </div>
+          <div class="field">
+            <p-checkbox id="isActive" [binary]="true" [(ngModel)]="optionValue.isActive" label="Is Active"></p-checkbox>
+          </div>
+        </div>
+      </ng-template>
+
+      <ng-template pTemplate="footer">
+        <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
+        <button pButton pRipple label="Save" icon="pi pi-check" (click)="saveOptionValue()"></button>
+      </ng-template>
+    </p-dialog>
+
+    <!-- Delete Confirmation Dialog -->
+    <p-dialog [(visible)]="deleteOptionValueDialog" header="Confirm" [modal]="true" [style]="{width:'450px'}">
+      <div class="flex align-items-center justify-content-center">
+        <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
+        <span *ngIf="optionValue">Are you sure you want to delete <b>{{optionValue.value}}</b>?</span>
+      </div>
+      <ng-template pTemplate="footer">
+        <button pButton pRipple icon="pi pi-times" class="p-button-text" label="No"
+          (click)="deleteOptionValueDialog = false"></button>
+        <button pButton pRipple icon="pi pi-check" label="Yes" (click)="confirmDelete()"></button>
+      </ng-template>
+    </p-dialog>
+
+    <!-- Delete Multiple Confirmation Dialog -->
+    <p-dialog [(visible)]="deleteOptionValuesDialog" header="Confirm" [modal]="true" [style]="{width:'450px'}">
+      <div class="flex align-items-center justify-content-center">
+        <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
+        <span>Are you sure you want to delete the selected option values?</span>
+      </div>
+      <ng-template pTemplate="footer">
+        <button pButton pRipple icon="pi pi-times" class="p-button-text" label="No"
+          (click)="deleteOptionValuesDialog = false"></button>
+        <button pButton pRipple icon="pi pi-check" label="Yes" (click)="confirmDeleteSelected()"></button>
+      </ng-template>
+    </p-dialog>
+  </div>
+</div>

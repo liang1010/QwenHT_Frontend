@@ -1,46 +1,85 @@
+import { RouterModule } from '@angular/router';
 import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
-import { AuthGuard } from './private/core/guards/auth.guard';
-import { PublicLayoutComponent } from './public/public-layout.component';
-import { PrivateLayoutComponent } from './private-layout.component';
-
-const routes: Routes = [
-  // Public routes
-  {
-    path: '',
-    component: PublicLayoutComponent,
-    loadChildren: () => import('./public/public.module').then(m => m.PublicModule)
-  },
-  // Auth routes
-  {
-    path: 'auth',
-    component: PublicLayoutComponent,
-    loadChildren: () => import('./private/features/auth/auth.module').then(m => m.AuthModule)
-  },
-  // Private area routes (authentication required) - wrapped in single layout
-  {
-    path: '',
-    component: PrivateLayoutComponent,
-    canActivate: [AuthGuard],
-    children: [
-      {
-        path: 'dashboard',
-        loadChildren: () => import('./private/features/dashboard/dashboard.module').then(m => m.DashboardModule)
-      },
-      {
-        path: 'users',
-        loadChildren: () => import('./private/features/users/users.module').then(m => m.UsersModule)
-      }
-    ]
-  },
-  // Default redirect
-  { path: '', redirectTo: '/home', pathMatch: 'full' },
-  { path: 'signin-callback', redirectTo: '/dashboard' },
-  { path: '**', redirectTo: '/home' }  // Wildcard route for 404 pages
-];
+import { AppNotfoundComponent } from './layout/app-notfound/app-notfound.component';
+import { AppLayoutComponent } from './layout/app-layout/app-layout.component';
+import { AuthGuard } from './guards/auth.guard';
+import { LoggedInGuard } from './guards/logged-in.guard';
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
+  imports: [
+    RouterModule.forRoot([
+      {
+        path: '',
+        loadChildren: () => import('./modules/landing/landing.module').then(m => m.LandingModule),
+      },
+      {
+        path: 'auth',
+        children: [
+          {
+            path: 'login',
+            canActivate: [LoggedInGuard],
+            loadChildren: () => import('./modules/login/login.module').then(m => m.LoginModule)
+          }]
+      },
+      {
+        path: 'app',
+        component: AppLayoutComponent,
+        canActivate: [AuthGuard],
+        children: [
+          {
+            path: 'dashboard',
+            loadChildren: () => import('./modules/dashboard/dashboard.module').then(m => m.DashboardModule)
+          },
+          {
+
+            path: 'manage',
+            children: [
+              {
+                path: 'user',
+                loadChildren: () => import('./modules/manage-user/manage-user.module').then(m => m.ManageUserModule)
+              },
+              {
+                path: 'staff',
+                loadChildren: () => import('./modules/manage-staff/manage-staff.module').then(m => m.ManageStaffModule)
+              },
+              {
+                path: 'menus',
+                loadChildren: () => import('./modules/manage-menus/manage-menus.module').then(m => m.ManageMenusModule)
+              },
+              {
+                path: 'navigation',
+                loadChildren: () => import('./modules/navigation/navigation.module').then(m => m.NavigationModule)
+              },
+              {
+                path: 'option-values',
+                loadChildren: () => import('./modules/manage-option-values/manage-option-values.module').then(m => m.ManageOptionValuesModule)
+              },
+              {
+                path: 'role',
+                loadChildren: () => import('./modules/manage-roles/manage-roles.module').then(m => m.ManageRolesModule)
+              }
+            ]
+          },
+          {
+            path: 'login',
+            loadChildren: () => import('./modules/login/login.module').then(m => m.LoginModule)
+          },
+          {
+            path: 'landing',
+            loadChildren: () => import('./modules/landing/landing.module').then(m => m.LandingModule)
+          },
+          {
+            path: 'notfound',
+            component: AppNotfoundComponent
+          }
+
+        ]
+      },
+      { path: 'notfound', component: AppNotfoundComponent },
+      { path: '**', redirectTo: '/notfound' },
+    ], { scrollPositionRestoration: 'enabled', anchorScrolling: 'enabled', onSameUrlNavigation: 'reload' })
+  ],
   exports: [RouterModule]
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {
+}

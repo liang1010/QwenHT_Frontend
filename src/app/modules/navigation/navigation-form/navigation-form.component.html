@@ -1,0 +1,61 @@
+<div class="card">
+  <form [formGroup]="navigationForm" (ngSubmit)="onSubmit()" class="p-fluid">
+    <div class="field">
+      <label for="name">Name *</label>
+      <input type="text" pInputText id="name" formControlName="name"
+        [class]="{'ng-dirty': navigationForm.get('name')?.invalid && navigationForm.get('name')?.touched}">
+      <small *ngIf="navigationForm.get('name')?.invalid && navigationForm.get('name')?.touched" class="p-error">
+        Name is required
+      </small>
+    </div>
+
+    <div class="field">
+      <label for="icon">Icon</label>
+      <input type="text" pInputText id="icon" formControlName="icon" placeholder="e.g., pi pi-home">
+    </div>
+
+    <div class="field">
+      <label for="route">Route *</label>
+      <input type="text" pInputText id="route" formControlName="route" placeholder="e.g., /app/dashboard"
+        [class]="{'ng-dirty': navigationForm.get('route')?.invalid && navigationForm.get('route')?.touched}">
+      <small *ngIf="navigationForm.get('route')?.invalid && navigationForm.get('route')?.touched" class="p-error">
+        Route is required
+      </small>
+    </div>
+
+    <div class="field">
+      <label for="parentId">Parent Item</label>
+      <p-dropdown inputId="parentId" formControlName="parentId" [options]="allNavigationItems" optionLabel="name"
+        optionValue="id" placeholder="Select a parent item (optional)" [filter]="true" appendTo="body">
+        <ng-template let-option pTemplate="item">
+          <div>{{option.name}}</div>
+          <small class="text-muted">{{option.route}}</small>
+        </ng-template>
+      </p-dropdown>
+    </div>
+
+    <div class="grid">
+      <div class="col-6">
+        <div class="field">
+          <label for="order">Order</label>
+          <p-inputNumber inputId="order" formControlName="order" [min]="0">
+          </p-inputNumber>
+        </div>
+      </div>
+      <div class="col-6">
+        <div class="field">
+          <label for="isVisible">Visible</label>
+          <p-inputSwitch id="isVisible" formControlName="isVisible">
+          </p-inputSwitch>
+        </div>
+      </div>
+    </div>
+
+    <div class="flex justify-content-end gap-2">
+      <button type="button" pButton pRipple label="Cancel" class="p-button-text" (click)="onCancel()">
+      </button>
+      <button type="submit" pButton pRipple [label]="isEdit ? 'Update' : 'Create'" [disabled]="navigationForm.invalid">
+      </button>
+    </div>
+  </form>
+</div>

@@ -1,0 +1,54 @@
+<div class="grid">
+  <div class="col-12">
+    <div class="card">
+      <h5>Navigation Management</h5>
+      <p-toolbar styleClass="mb-4">
+        <ng-template pTemplate="left">
+          <button pButton pRipple label="New" icon="pi pi-plus" class="p-button-success mr-2" (click)="addNavigationItem()"></button>
+        </ng-template>
+      </p-toolbar>
+
+      <p-treeTable
+        [value]="navigationItems"
+        [paginator]="true"
+        [rows]="10"
+        [loading]="loading"
+        [globalFilterFields]="['data.name','data.route','data.icon']"
+        responsiveLayout="scroll">
+
+        <ng-template pTemplate="header">
+          <tr>
+            <th>Name</th>
+            <th>Route</th>
+            <th>Icon</th>
+            <th>Order</th>
+            <th>Visible</th>
+            <th style="width: 12rem">Actions</th>
+          </tr>
+        </ng-template>
+
+        <ng-template pTemplate="body" let-rowNode let-item="node.data">
+          <tr>
+            <td>
+              <p-treeTableToggler [rowNode]="rowNode"></p-treeTableToggler>
+              {{item.name}}
+            </td>
+            <td>{{item.route}}</td>
+            <td>{{item.icon}}</td>
+            <td>{{item.order}}</td>
+            <td>
+              <p-tag [value]="item.isVisible ? 'Yes' : 'No'" [severity]="item.isVisible ? 'success' : 'danger'"></p-tag>
+            </td>
+            <td>
+              <button pButton pRipple icon="pi pi-user-edit" class="p-button-rounded p-button-warning mr-2" pTooltip="Assign Roles" tooltipPosition="top" (click)="assignRoles(rowNode.node)"></button>
+              <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2" pTooltip="Edit" tooltipPosition="top" (click)="editNavigationItem(rowNode.node)"></button>
+              <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-danger" pTooltip="Delete" tooltipPosition="top" (click)="deleteNavigationItem(rowNode.node)"></button>
+            </td>
+          </tr>
+        </ng-template>
+      </p-treeTable>
+    </div>
+  </div>
+
+  <p-confirmDialog [style]="{width: '450px'}" rejectButtonStyleClass="p-button-text"></p-confirmDialog>
+</div>

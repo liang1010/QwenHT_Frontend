@@ -1,5 +1,4 @@
 export const environment = {
   production: true,
-  apiUrl: '/api',
-  identityServerUrl: '/'
+  apiUrl: 'http://localhost:5051/api',
 };

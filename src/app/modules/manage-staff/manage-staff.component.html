@@ -1,0 +1,251 @@
+<div class="grid">
+  <div class="col-12">
+    <div class="card px-6 py-6">
+      <p-toast></p-toast>
+      <p-toolbar styleClass="mb-4">
+        <ng-template pTemplate="left">
+          <div class="my-2">
+            <button pButton pRipple label="New" icon="pi pi-plus" class="p-button-success mr-2"
+              (click)="openNew()"></button>
+            <button pButton pRipple label="Delete" icon="pi pi-trash" class="p-button-danger"
+              (click)="deleteSelectedStaffs()" [disabled]="!selectedStaffs || !selectedStaffs.length"></button>
+          </div>
+        </ng-template>
+
+        <ng-template pTemplate="right">
+          <button pButton pRipple label="Export" icon="pi pi-upload" class="p-button-help"
+            (click)="customExportCSV()"></button>
+        </ng-template>
+      </p-toolbar>
+
+      <p-table #dt [value]="staffs" [columns]="cols" responsiveLayout="scroll" [rows]="rows"
+        [globalFilterFields]="['fullName','nickName','phoneNo','nationality','type']" [paginator]="true"
+        [rowsPerPageOptions]="rowsPerPageOptions" [showCurrentPageReport]="true" [totalRecords]="totalRecords"
+        [lazy]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+        [(selection)]="selectedStaffs" selectionMode="multiple" [rowHover]="true" dataKey="id" (onPage)="onPage($event)"
+        (onSort)="onSort($event)">
+        <ng-template pTemplate="caption">
+          <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
+            <h5 class="m-0">Manage Staff</h5>
+            <span class="block mt-2 md:mt-0 p-input-icon-left">
+              <i class="pi pi-search"></i>
+              <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Search..."
+                class="w-full sm:w-auto" [value]="globalFilter" />
+            </span>
+          </div>
+        </ng-template>
+        <ng-template pTemplate="header">
+          <tr>
+            <th style="width: 3rem">
+              <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+            </th>
+            <th pSortableColumn="fullName">Full Name <p-sortIcon field="fullName"></p-sortIcon></th>
+            <th pSortableColumn="nickName">Nick Name <p-sortIcon field="nickName"></p-sortIcon></th>
+            <th pSortableColumn="phoneNo">Phone No <p-sortIcon field="phoneNo"></p-sortIcon></th>
+            <th pSortableColumn="nationality">Nationality <p-sortIcon field="nationality"></p-sortIcon></th>
+            <th pSortableColumn="type">Type <p-sortIcon field="type"></p-sortIcon></th>
+            <th pSortableColumn="status">Status <p-sortIcon field="status"></p-sortIcon></th>
+            <th style="width: 8rem">Actions</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-staff>
+          <tr>
+            <td>
+              <p-tableCheckbox [value]="staff"></p-tableCheckbox>
+            </td>
+            <td style="width:14%; min-width:10rem;"><span class="p-column-title">Full Name</span>
+              {{staff.fullName}}
+            </td>
+            <td style="width:14%; min-width:10rem;"><span class="p-column-title">Nick Name</span>
+              {{staff.nickName}}
+            </td>
+            <td style="width:14%; min-width:10rem;">
+              <span class="p-column-title">Phone No</span>
+              {{staff.phoneNo}}
+            </td>
+            <td style="width:14%; min-width:10rem;">
+              <span class="p-column-title">Nationality</span>
+              {{staff.nationality}}
+            </td>
+            <td style="width:14%; min-width:10rem;">
+              <span class="p-column-title">Type</span>
+              {{staff.type}}
+            </td>
+            <td style="width:10%; min-width:6rem;">
+              <span class="p-column-title">Status</span>
+              <p-tag [value]="getStatusText(staff.status)" [severity]="getStatusSeverity(staff.status)"></p-tag>
+            </td>
+            <td>
+              <div class="flex">
+                <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2"
+                  (click)="editStaff(staff)"></button>
+                <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-danger"
+                  (click)="deleteStaff(staff)"></button>
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+
+    <p-dialog [(visible)]="staffDialog"
+      [style]="{'width': '700px',  'max-width': '700px', 'overflow': 'auto' }"
+      header="Staff Details" [modal]="true" class="p-fluid">
+      <ng-template pTemplate="content">
+        <form [formGroup]="staffForm">
+        <p-tabView>
+          <p-tabPanel header="Personal Information">
+            <div class="p-4">
+              <div class="field">
+                <label for="fullName">Full Name *</label>
+                <input type="text" pInputText id="fullName" formControlName="fullName"
+                  [ngClass]="{'ng-invalid ng-dirty': submitted && fullName?.invalid}" />
+                <small class="ng-dirty ng-invalid" *ngIf="submitted && fullName?.invalid && fullName?.errors?.['required']">Full Name is required.</small>
+                <small class="ng-dirty ng-invalid" *ngIf="submitted && fullName?.invalid && fullName?.errors?.['minlength']">Full Name must be at least 2 characters.</small>
+                <small class="ng-dirty ng-invalid" *ngIf="submitted && fullName?.invalid && fullName?.errors?.['maxlength']">Full Name cannot exceed 255 characters.</small>
+              </div>
+              <div class="field">
+                <label for="nickName">Nick Name</label>
+                <input type="text" pInputText id="nickName" formControlName="nickName" />
+              </div>
+              <div class="field">
+                <label for="phoneNo">Phone No</label>
+                <input type="text" pInputText id="phoneNo" formControlName="phoneNo"
+                  [ngClass]="{'ng-invalid ng-dirty': submitted && phoneNo?.invalid}" />
+                <small class="ng-dirty ng-invalid" *ngIf="submitted && phoneNo?.invalid && phoneNo?.errors?.['pattern']">Please enter a valid phone number.</small>
+              </div>
+              <div class="field">
+                <label for="nationality">Nationality</label>
+                <p-autoComplete id="nationality" formControlName="nationality" [suggestions]="filteredNationalities"
+                  (completeMethod)="searchNationalities($event)" [dropdown]="true" [minLength]="0"
+                  [forceSelection]="true">
+                </p-autoComplete>
+              </div>
+              <div class="field">
+                <label for="hostelName">Hostel Name</label>
+                <p-autoComplete id="hostelName" formControlName="hostelName" [suggestions]="filteredHostels"
+                  (completeMethod)="searchHostels($event)" [dropdown]="true" [minLength]="0"
+                  [forceSelection]="true">
+                </p-autoComplete>
+              </div>
+              <div class="field">
+                <label for="hostelRoom">Hostel Room</label>
+                <input type="text" pInputText id="hostelRoom" formControlName="hostelRoom" />
+              </div>
+              <div class="field">
+                <label for="reference">Reference</label>
+                <input type="text" pInputText id="reference" formControlName="reference" />
+              </div>
+              <div class="field">
+                <label for="status">Status</label>
+                <p-dropdown id="status" [options]="[{label: 'Active', value: 1}, {label: 'Inactive', value: 0}]"
+                  formControlName="status" optionLabel="label" optionValue="value" placeholder="Select Status" appendTo="body"></p-dropdown>
+                <small class="ng-dirty ng-invalid" *ngIf="submitted && staffForm.get('status')?.invalid">Status is required.</small>
+              </div>
+            </div>
+          </p-tabPanel>
+
+          <p-tabPanel header="Employment Details">
+            <div class="p-4">
+              <div class="field">
+                <label for="outlet">Outlet</label>
+                <p-autoComplete id="outlet" formControlName="outlet" [suggestions]="filteredOutlets"
+                  (completeMethod)="searchOutlets($event)" [dropdown]="true" [minLength]="0" appendTo="body"
+                  [forceSelection]="true">
+                </p-autoComplete>
+              </div>
+              <div class="field">
+                <label for="type">Type</label>
+                <p-autoComplete id="type" formControlName="type" [suggestions]="filteredTypes"
+                  (completeMethod)="searchTypes($event)" [dropdown]="true" [minLength]="0" appendTo="body"
+                  [forceSelection]="true">
+                </p-autoComplete>
+              </div>
+              <div class="field">
+                <label for="checkIn">Check In</label>
+                <p-calendar id="checkIn" formControlName="checkIn" [showIcon]="true" appendTo="body"></p-calendar>
+              </div>
+              <div class="field">
+                <label for="checkOut">Check Out</label>
+                <p-calendar id="checkOut" formControlName="checkOut" [showIcon]="true" appendTo="body"></p-calendar>
+              </div>
+            </div>
+          </p-tabPanel>
+
+          <p-tabPanel header="Compensation">
+            <div class="p-4">
+              <div class="field">
+                <label for="footRatePerHour">Foot Rate Per Hour</label>
+                <p-inputNumber id="footRatePerHour" formControlName="footRatePerHour" mode="decimal" [minFractionDigits]="2" [maxFractionDigits]="2"></p-inputNumber>
+              </div>
+              <div class="field">
+                <label for="bodyRatePerHour">Body Rate Per Hour</label>
+                <p-inputNumber id="bodyRatePerHour" formControlName="bodyRatePerHour" mode="decimal" [minFractionDigits]="2" [maxFractionDigits]="2"></p-inputNumber>
+              </div>
+              <div class="field">
+                <label for="commissionBasePercentage">Commission Base Percentage</label>
+                <p-inputNumber id="commissionBasePercentage" formControlName="commissionBasePercentage" mode="decimal" [min]="0" [max]="100" suffix="%"></p-inputNumber>
+              </div>
+              <div class="field">
+                <label for="guaranteeIncome">Guarantee Income</label>
+                <p-inputNumber id="guaranteeIncome" formControlName="guaranteeIncome" mode="currency" currency="USD" [locale]="'en-US'"></p-inputNumber>
+              </div>
+            </div>
+          </p-tabPanel>
+
+          <p-tabPanel header="Bank Details">
+            <div class="p-4">
+              <div class="field">
+                <label for="bankName">Bank Name</label>
+                <p-autoComplete id="bankName" formControlName="bankName" [suggestions]="filteredBanks"
+                  (completeMethod)="searchBanks($event)" [dropdown]="true" [minLength]="0" appendTo="body"
+                  [forceSelection]="true">
+                </p-autoComplete>
+              </div>
+              <div class="field">
+                <label for="accountHolderName">Account Holder Name</label>
+                <input type="text" pInputText id="accountHolderName" formControlName="accountHolderName" />
+              </div>
+              <div class="field">
+                <label for="accountNumber">Account Number</label>
+                <input type="text" pInputText id="accountNumber" formControlName="accountNumber"
+                  [ngClass]="{'ng-invalid ng-dirty': submitted && accountNumber?.invalid}" />
+                <small class="ng-dirty ng-invalid" *ngIf="submitted && accountNumber?.invalid && accountNumber?.errors?.['pattern']">Please enter a valid account number (numbers only).</small>
+              </div>
+            </div>
+          </p-tabPanel>
+        </p-tabView>
+        </form>
+      </ng-template>
+
+      <ng-template pTemplate="footer">
+        <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
+        <button pButton pRipple label="Save" icon="pi pi-check" (click)="saveStaff()" [disabled]="staffForm.invalid"></button>
+      </ng-template>
+    </p-dialog>
+
+    <p-dialog [(visible)]="deleteStaffDialog" header="Confirm" [modal]="true" [style]="{width:'450px'}">
+      <div class="flex align-items-center justify-content-center">
+        <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
+        <span *ngIf="staff">Are you sure you want to delete <b>{{staff.fullName}}</b>?</span>
+      </div>
+      <ng-template pTemplate="footer">
+        <button pButton pRipple icon="pi pi-times" class="p-button-text" label="No"
+          (click)="deleteStaffDialog = false"></button>
+        <button pButton pRipple icon="pi pi-check" label="Yes" (click)="confirmDelete()"></button>
+      </ng-template>
+    </p-dialog>
+
+    <p-dialog [(visible)]="deleteStaffsDialog" header="Confirm" [modal]="true" [style]="{width:'450px'}">
+      <div class="flex align-items-center justify-content-center">
+        <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
+        <span>Are you sure you want to delete selected staff?</span>
+      </div>
+      <ng-template pTemplate="footer">
+        <button pButton pRipple icon="pi pi-times" class="p-button-text" label="No"
+          (click)="deleteStaffsDialog = false"></button>
+        <button pButton pRipple icon="pi pi-check" label="Yes" (click)="confirmDeleteSelected()"></button>
+      </ng-template>
+    </p-dialog>
+  </div>
+</div>
