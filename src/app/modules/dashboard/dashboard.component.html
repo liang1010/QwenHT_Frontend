@@ -65,7 +65,7 @@
         </div>
         <div class="flex align-items-center justify-content-center bg-orange-100 border-round"
           [ngStyle]="{width: '2.5rem', height: '2.5rem'}">
-          <i class="pi pi-home text-orange-500 text-xl"></i>
+          <i class="pi pi-dollar text-orange-500 text-xl"></i>
         </div>
       </div>
       <span [class]="salesChangePercentageHTSA >= 0 ? 'text-green-500 font-medium' : 'text-red-500 font-medium'">{{
@@ -85,7 +85,7 @@
         </div>
         <div class="flex align-items-center justify-content-center bg-cyan-100 border-round"
           [ngStyle]="{width: '2.5rem', height: '2.5rem'}">
-          <i class="pi pi-home text-cyan-500 text-xl"></i>
+          <i class="pi pi-dollar text-cyan-500 text-xl"></i>
         </div>
       </div>
       <span [class]="salesChangePercentageHTL >= 0 ? 'text-green-500 font-medium' : 'text-red-500 font-medium'">{{
@@ -105,7 +105,7 @@
         </div>
         <div class="flex align-items-center justify-content-center bg-purple-100 border-round"
           [ngStyle]="{width: '2.5rem', height: '2.5rem'}">
-          <i class="pi pi-home text-purple-500 text-xl"></i>
+          <i class="pi pi-dollar text-purple-500 text-xl"></i>
         </div>
       </div>
       <span [class]="salesChangePercentageHTG >= 0 ? 'text-green-500 font-medium' : 'text-red-500 font-medium'">{{
@@ -120,7 +120,11 @@
     <div class="card">
       <h5>Sales Comparison</h5>
       <div class="">
-        <p-chart type="bar" [data]="chartData" [options]="chartOptions" height="300px"></p-chart>
+        <p-chart type="bar" [data]="chartData" [options]="chartOptions" height="500px"></p-chart>
+      </div>
+      <div class="text-sm text-500 mt-2">
+        <p class="mb-1">Current Period: Sales for selected {{ selectedDate ? 'date' : selectedMonth ? 'month' : selectedYear ? 'year' : 'today' }}</p>
+        <p>Previous Period: Sales for the corresponding previous {{ selectedDate ? 'date' : selectedMonth ? 'month' : selectedYear ? 'year' : 'today' }}</p>
       </div>
     </div>
   </div>
