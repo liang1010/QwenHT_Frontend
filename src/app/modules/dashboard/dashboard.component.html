@@ -1,73 +1,127 @@
 <div class="grid">
-  <div class="col-12 lg:col-6 xl:col-3">
-    <div class="card mb-0">
-      <div class="flex justify-content-between mb-3">
-        <div>
-          <span class="block text-500 font-medium mb-3">Orders</span>
-          <div class="text-900 font-medium text-xl">152</div>
-        </div>
-        <div class="flex align-items-center justify-content-center bg-blue-100 border-round"
-          [ngStyle]="{width: '2.5rem', height: '2.5rem'}">
-          <i class="pi pi-shopping-cart text-blue-500 text-xl"></i>
-        </div>
-      </div>
-      <span class="text-green-500 font-medium">24 new </span>
-      <span class="text-500">since last visit</span>
-    </div>
-  </div>
-  <div class="col-12 lg:col-6 xl:col-3">
-    <div class="card mb-0">
-      <div class="flex justify-content-between mb-3">
-        <div>
-          <span class="block text-500 font-medium mb-3">Revenue</span>
-          <div class="text-900 font-medium text-xl">$2.100</div>
-        </div>
-        <div class="flex align-items-center justify-content-center bg-orange-100 border-round"
-          [ngStyle]="{width: '2.5rem', height: '2.5rem'}">
-          <i class="pi pi-map-marker text-orange-500 text-xl"></i>
-        </div>
-      </div>
-      <span class="text-green-500 font-medium">%52+ </span>
-      <span class="text-500">since last week</span>
-    </div>
-  </div>
-  <div class="col-12 lg:col-6 xl:col-3">
-    <div class="card mb-0">
-      <div class="flex justify-content-between mb-3">
-        <div>
-          <span class="block text-500 font-medium mb-3">Customers</span>
-          <div class="text-900 font-medium text-xl">28441</div>
-        </div>
-        <div class="flex align-items-center justify-content-center bg-cyan-100 border-round"
-          [ngStyle]="{width: '2.5rem', height: '2.5rem'}">
-          <i class="pi pi-inbox text-cyan-500 text-xl"></i>
+  <!-- Dashboard header -->
+  <div class="col-12">
+    <div class="card">
+      <div
+        class="flex flex-column sm:flex-row justify-content-between align-items-start sm:align-items-center mb-4 gap-3">
+        <h4>Sales Dashboard</h4>
+        <div class="flex flex-wrap gap-2">
+          <!-- Date picker for specific date -->
+          <div class="p-inputgroup">
+            <span class="p-inputgroup-addon"><i class="pi pi-calendar"></i></span>
+            <p-calendar [(ngModel)]="selectedDate" (onSelect)="onDateChange()" [inline]="false"
+              placeholder="Select Date" [showIcon]="true">
+            </p-calendar>
+          </div>
+
+          <!-- Month picker -->
+          <div class="p-inputgroup">
+            <span class="p-inputgroup-addon"><i class="pi pi-calendar-times"></i></span>
+            <p-calendar [(ngModel)]="selectedMonth" (onSelect)="onMonthChange()" view="month" dateFormat="mm/yy"
+              [inline]="false" placeholder="Select Month" [yearNavigator]="true" [yearRange]="'2020:2030'"
+              [monthNavigator]="true">
+            </p-calendar>
+          </div>
+
+          <!-- Year picker -->
+          <div class="p-inputgroup">
+            <span class="p-inputgroup-addon"><i class="pi pi-calendar-clock"></i></span>
+            <p-calendar [(ngModel)]="selectedYear" (onSelect)="onYearChange()" view="year" dateFormat="yy"
+              [inline]="false" placeholder="Select Year" [yearNavigator]="true" [yearRange]="'2020:2030'">
+            </p-calendar>
+          </div>
         </div>
       </div>
-      <span class="text-green-500 font-medium">520 </span>
-      <span class="text-500">newly registered</span>
-    </div>
-  </div>
-  <div class="col-12 lg:col-6 xl:col-3">
-    <div class="card mb-0">
-      <div class="flex justify-content-between mb-3">
-        <div>
-          <span class="block text-500 font-medium mb-3">Comments</span>
-          <div class="text-900 font-medium text-xl">152 Unread</div>
-        </div>
-        <div class="flex align-items-center justify-content-center bg-purple-100 border-round"
-          [ngStyle]="{width: '2.5rem', height: '2.5rem'}">
-          <i class="pi pi-comment text-purple-500 text-xl"></i>
-        </div>
-      </div>
-      <span class="text-green-500 font-medium">85 </span>
-      <span class="text-500">responded</span>
     </div>
   </div>
 
-  <div class="col-12 xl:col-6">
+  <!-- Total Sales for all outlets -->
+  <div class="col-12 md:col-6 lg:col-3">
     <div class="card">
-      <h5>Sales Overview</h5>
-      <p-chart type="line" [data]="chartData" [options]="chartOptions"></p-chart>
+      <div class="flex justify-content-between mb-3">
+        <div>
+          <span class="block text-500 font-medium mb-3">Total Sales (All Outlets)</span>
+          <div class="text-900 font-medium text-xl">{{ totalSalesAllOutlets | localCurrency }}</div>
+        </div>
+        <div class="flex align-items-center justify-content-center bg-blue-100 border-round"
+          [ngStyle]="{width: '2.5rem', height: '2.5rem'}">
+          <i class="pi pi-dollar text-blue-500 text-xl"></i>
+        </div>
+      </div>
+      <span [class]="salesChangePercentageAll >= 0 ? 'text-green-500 font-medium' : 'text-red-500 font-medium'">{{
+        salesChangePercentageAll }}% </span>
+      <span class="text-500">since previous {{selectedDate ? "day" : selectedMonth ? "month" : selectedYear ?
+        "year" : "day" }}</span>
+    </div>
+  </div>
+
+  <!-- Total Sales for HTSA outlet -->
+  <div class="col-12 md:col-6 lg:col-3">
+    <div class="card">
+      <div class="flex justify-content-between mb-3">
+        <div>
+          <span class="block text-500 font-medium mb-3">Total Sales (HTSA)</span>
+          <div class="text-900 font-medium text-xl">{{ totalSalesHTSA | localCurrency }}</div>
+        </div>
+        <div class="flex align-items-center justify-content-center bg-orange-100 border-round"
+          [ngStyle]="{width: '2.5rem', height: '2.5rem'}">
+          <i class="pi pi-home text-orange-500 text-xl"></i>
+        </div>
+      </div>
+      <span [class]="salesChangePercentageHTSA >= 0 ? 'text-green-500 font-medium' : 'text-red-500 font-medium'">{{
+        salesChangePercentageHTSA }}% </span>
+      <span class="text-500">since previous {{selectedDate ? "day" : selectedMonth ? "month" : selectedYear ?
+        "year" : "day" }}</span>
+    </div>
+  </div>
+
+  <!-- Total Sales for HTL outlet -->
+  <div class="col-12 md:col-6 lg:col-3">
+    <div class="card">
+      <div class="flex justify-content-between mb-3">
+        <div>
+          <span class="block text-500 font-medium mb-3">Total Sales (HTL)</span>
+          <div class="text-900 font-medium text-xl">{{ totalSalesHTL | localCurrency }}</div>
+        </div>
+        <div class="flex align-items-center justify-content-center bg-cyan-100 border-round"
+          [ngStyle]="{width: '2.5rem', height: '2.5rem'}">
+          <i class="pi pi-home text-cyan-500 text-xl"></i>
+        </div>
+      </div>
+      <span [class]="salesChangePercentageHTL >= 0 ? 'text-green-500 font-medium' : 'text-red-500 font-medium'">{{
+        salesChangePercentageHTL }}% </span>
+      <span class="text-500">since previous {{selectedDate ? "day" : selectedMonth ? "month" : selectedYear ?
+        "year" : "day" }}</span>
+    </div>
+  </div>
+
+  <!-- Total Sales for HTG outlet -->
+  <div class="col-12 md:col-6 lg:col-3">
+    <div class="card">
+      <div class="flex justify-content-between mb-3">
+        <div>
+          <span class="block text-500 font-medium mb-3">Total Sales (HTG)</span>
+          <div class="text-900 font-medium text-xl">{{ totalSalesHTG | localCurrency }}</div>
+        </div>
+        <div class="flex align-items-center justify-content-center bg-purple-100 border-round"
+          [ngStyle]="{width: '2.5rem', height: '2.5rem'}">
+          <i class="pi pi-home text-purple-500 text-xl"></i>
+        </div>
+      </div>
+      <span [class]="salesChangePercentageHTG >= 0 ? 'text-green-500 font-medium' : 'text-red-500 font-medium'">{{
+        salesChangePercentageHTG }}% </span>
+      <span class="text-500">since previous {{selectedDate ? "day" : selectedMonth ? "month" : selectedYear ?
+        "year" : "day" }}</span>
+    </div>
+  </div>
+
+  <!-- Sales Comparison Chart -->
+  <div class="col-12">
+    <div class="card">
+      <h5>Sales Comparison</h5>
+      <div class="">
+        <p-chart type="bar" [data]="chartData" [options]="chartOptions" height="300px"></p-chart>
+      </div>
     </div>
   </div>
 </div>

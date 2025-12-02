@@ -31,8 +31,12 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { CalendarModule } from 'primeng/calendar';
 import { TabViewModule } from 'primeng/tabview';
 import { AutoCompleteModule } from "primeng/autocomplete";
+import { LocalCurrencyPipe } from '../pipes/local-currency.pipe';
 
 @NgModule({
+  declarations: [
+    LocalCurrencyPipe
+  ],
   imports: [
     FormsModule,
     ReactiveFormsModule,
@@ -101,6 +105,7 @@ import { AutoCompleteModule } from "primeng/autocomplete";
 		CalendarModule,
     TabViewModule,
 		AutoCompleteModule,
+    LocalCurrencyPipe
   ]
 })
 export class PrimeNgModule { }

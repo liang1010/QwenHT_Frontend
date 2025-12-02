@@ -12,6 +12,7 @@ import { ConfirmationService, MessageService } from 'primeng/api';
 import { PrimeNgModule } from '../../modules/primeng.module';
 import { DialogService } from 'primeng/dynamicdialog';
 import { AppChangePasswordDialogComponent } from '../app-change-password-dialog/app-change-password-dialog.component';
+import { DatePipe } from '@angular/common';
 
 @NgModule({
   declarations: [
@@ -30,6 +31,6 @@ import { AppChangePasswordDialogComponent } from '../app-change-password-dialog/
     PrimeNgModule,
   ],
   exports: [AppLayoutComponent, PrimeNgModule],
-  providers: [MessageService, DialogService, ConfirmationService]
+  providers: [MessageService, DialogService, ConfirmationService, DatePipe]
 })
 export class AppLayoutModule { }
