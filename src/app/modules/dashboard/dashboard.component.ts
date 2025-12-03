@@ -161,7 +161,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     }
 
     // API call to fetch real sales data from backend
-    const apiUrl = `${environment.apiUrl}/sales/dashboard?${dateParam}`;
+    const apiUrl = `${environment.apiUrl}/dashboard?${dateParam}`;
 
     this.http.get<SalesData>(apiUrl).subscribe({
       next: (data) => {
