@@ -32,6 +32,7 @@ import { CalendarModule } from 'primeng/calendar';
 import { TabViewModule } from 'primeng/tabview';
 import { AutoCompleteModule } from "primeng/autocomplete";
 import { LocalCurrencyPipe } from '../pipes/local-currency.pipe';
+import { InputTextareaModule } from "primeng/inputtextarea";
 
 @NgModule({
   declarations: [
@@ -70,6 +71,7 @@ import { LocalCurrencyPipe } from '../pipes/local-currency.pipe';
 		CalendarModule,
     TabViewModule,
 		AutoCompleteModule,
+    InputTextareaModule,
   ],
   exports: [
     FormsModule,
@@ -105,6 +107,7 @@ import { LocalCurrencyPipe } from '../pipes/local-currency.pipe';
 		CalendarModule,
     TabViewModule,
 		AutoCompleteModule,
+    InputTextareaModule,
     LocalCurrencyPipe
   ]
 })

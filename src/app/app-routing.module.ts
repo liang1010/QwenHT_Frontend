@@ -31,6 +31,10 @@ import { LoggedInGuard } from './guards/logged-in.guard';
             loadChildren: () => import('./modules/dashboard/dashboard.module').then(m => m.DashboardModule)
           },
           {
+            path: 'sales',
+            loadChildren: () => import('./modules/sales/sales.module').then(m => m.SalesModule)
+          },
+          {
 
             path: 'manage',
             children: [
@@ -57,7 +61,7 @@ import { LoggedInGuard } from './guards/logged-in.guard';
               {
                 path: 'role',
                 loadChildren: () => import('./modules/manage-roles/manage-roles.module').then(m => m.ManageRolesModule)
-              }
+              },
             ]
           },
           {

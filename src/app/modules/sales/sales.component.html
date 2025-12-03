@@ -1,0 +1,127 @@
+<div class="grid">
+  <div class="col-12">
+    <div class="card">
+      <p-toast></p-toast>
+      <h5>Sales Entry</h5>
+      <p>Enter sales details below</p>
+      <form [formGroup]="salesForm" (ngSubmit)="onSubmit()">
+        <div class="p-fluid p-formgrid grid">
+          <div class="field col-12 xl:col-4">
+            <label for="salesDate">Sales Date *</label>
+            <p-calendar id="salesDate" formControlName="salesDate" [showIcon]="true"
+              [class]="{'ng-invalid ng-dirty': salesForm.get('salesDate')?.invalid && salesForm.get('salesDate')?.touched}">
+            </p-calendar>
+            <small *ngIf="salesForm.get('salesDate')?.invalid && salesForm.get('salesDate')?.touched"
+              class="p-error">Sales date is required.</small>
+          </div>
+
+          <div class="field col-12 xl:col-4">
+            <label for="outlet">Outlet *</label>
+            <p-dropdown id="outlet" formControlName="outlet" [options]="outlets" optionLabel="value" optionValue="value"
+              [class]="{'ng-invalid ng-dirty': salesForm.get('outlet')?.invalid && salesForm.get('outlet')?.touched}"
+              placeholder="Select Outlet">
+            </p-dropdown>
+            <small *ngIf="salesForm.get('outlet')?.invalid && salesForm.get('outlet')?.touched" class="p-error">Outlet
+              selection is required.</small>
+          </div>
+
+          <div class="col-12 p-0 m-0" style="height:0;"></div>
+          <div class="field col-12 xl:col-4">
+            <label for="staffId">Staff *</label>
+            <p-autoComplete id="staffId" formControlName="staffId" [suggestions]="filteredStaffList"
+              (completeMethod)="searchStaff($event)" [dropdown]="true" [minLength]="0" [forceSelection]="true"
+              optionLabel="nickName" appendTo="body"
+              [class]="{'ng-invalid ng-dirty': salesForm.get('staffId')?.invalid && salesForm.get('staffId')?.touched}"
+              placeholder="Select Staff">
+            </p-autoComplete>
+            <small *ngIf="salesForm.get('staffId')?.invalid && salesForm.get('staffId')?.touched" class="p-error">Staff
+              selection is required.</small>
+          </div>
+          <div class="col-12 p-0 m-0" style="height:0;"></div>
+          <div class="field col-12 xl:col-4">
+            <label for="menuId">Menu *</label>
+            <p-autoComplete id="menuId" formControlName="menuId" [suggestions]="filteredMenuList"
+              (completeMethod)="searchMenu($event)" [dropdown]="true" [minLength]="0" [forceSelection]="true"
+              optionLabel="code" appendTo="body"
+              [class]="{'ng-invalid ng-dirty': salesForm.get('menuId')?.invalid && salesForm.get('menuId')?.touched}"
+              placeholder="Select Menu">
+            </p-autoComplete>
+            <small *ngIf="salesForm.get('menuId')?.invalid && salesForm.get('menuId')?.touched" class="p-error">Menu
+              selection is required.</small>
+          </div>
+          <div class="col-12 p-0 m-0" style="height:0;"></div>
+          <div class="field col-12 xl:col-2">
+            <label for="footMins">Foot Mins</label>
+            <p-inputNumber id="footMins" formControlName="footMins" locale="en-US" [disabled]="true">
+            </p-inputNumber>
+          </div>
+          <div class="field col-12 xl:col-2">
+            <label for="bodyMins">Body Mins</label>
+            <p-inputNumber id="bodyMins" formControlName="bodyMins" locale="en-US" [disabled]="true">
+            </p-inputNumber>
+          </div>
+          <div class="field col-12 xl:col-2">
+            <label for="staffCommission">Staff Commission</label>
+            <p-inputNumber id="staffCommission" formControlName="staffCommission" mode="currency" currency="MYR"
+              locale="en-US">
+            </p-inputNumber>
+          </div>
+          <div class="field col-12 xl:col-2">
+            <label for="extraCommission">Extra Commission</label>
+            <p-inputNumber id="extraCommission" formControlName="extraCommission" mode="currency" currency="MYR"
+              locale="en-US">
+            </p-inputNumber>
+          </div>
+          <div class="field col-12 xl:col-2">
+            <label for="price">Price *</label>
+            <p-inputNumber id="price" formControlName="price" mode="currency" currency="MYR" locale="en-US"
+              [class]="{'ng-invalid ng-dirty': salesForm.get('price')?.invalid && salesForm.get('price')?.touched}">
+            </p-inputNumber>
+            <small *ngIf="salesForm.get('price')?.invalid && salesForm.get('price')?.touched" class="p-error">Price is
+              required and must be a positive number.</small>
+          </div>
+          <div class="col-12 p-0 m-0" style="height:0;"></div>
+          <div class="field col-12 xl:col-2">
+            <div class="field-checkbox">
+              <p-checkbox id="request" formControlName="request" [binary]="true">
+              </p-checkbox>
+              <label for="request">Request</label>
+            </div>
+          </div>
+          <div class="field col-12 xl:col-2">
+            <div class="field-checkbox">
+              <p-checkbox id="oil" formControlName="oil" [binary]="true">
+              </p-checkbox>
+              <label for="oil">Oil</label>
+            </div>
+          </div>
+          <div class="field col-12 xl:col-2">
+            <div class="field-checkbox">
+              <p-checkbox id="footCream" formControlName="footCream" [binary]="true">
+              </p-checkbox>
+              <label for="footCream">Foot Cream</label>
+            </div>
+          </div>
+
+          <div class="col-12 p-0 m-0" style="height:0;"></div>
+          <div class="field col-12 xl:col-6">
+            <label for="remark">Remark</label>
+            <textarea pInputTextarea id="remark" formControlName="remark" rows="3" cols="30">
+              </textarea>
+          </div>
+
+          <div class="col-12 p-0 m-0" style="height:0;"></div>
+          <div class="field col-12 xl:col-8">
+            <button pButton pRipple label="Submit" icon="pi pi-check" type="submit"
+              [disabled]="!salesForm.valid"></button>
+          </div>
+          <div class="field col-12 xl:col-4">
+            <button pButton pRipple label="Reset" icon="pi pi-refresh" class="p-button-secondary" type="button"
+              (click)="resetForm()">
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

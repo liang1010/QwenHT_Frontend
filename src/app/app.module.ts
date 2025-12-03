@@ -5,7 +5,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppNotfoundComponent } from './layout/app-notfound/app-notfound.component';
 import { AppLayoutModule } from './layout/app-layout/app.layout.module';
 import { JwtModule } from '@auth0/angular-jwt';
-import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { BrowserModule } from '@angular/platform-browser';
 import { ProgressBarModule } from 'primeng/progressbar';
 import { AuthInterceptor } from './interceptors/auth.interceptor';
@@ -24,6 +24,7 @@ export function tokenGetter() {
     AppLayoutModule,
     ProgressBarModule,
     BrowserModule,
+    HttpClientModule,
     JwtModule.forRoot({
       config: {
         tokenGetter: tokenGetter,

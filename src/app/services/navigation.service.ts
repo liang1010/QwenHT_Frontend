@@ -13,7 +13,7 @@ export class NavigationService {
   constructor(private http: HttpClient) { }
 
   getUserNavigation(): Observable<NavigationItem[]> {
-    return this.http.get<NavigationItem[]>(`${this.apiUrl}/user`);
+    return this.http.get<NavigationItem[]>(`${environment.apiUrl}/layout/user`);
   }
 
   getAllNavigation(): Observable<NavigationItem[]> {

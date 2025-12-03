@@ -2,32 +2,31 @@
   <!-- Dashboard header -->
   <div class="col-12">
     <div class="card">
-      <div
-        class="flex flex-column sm:flex-row justify-content-between align-items-start sm:align-items-center mb-4 gap-3">
-        <h4>Sales Dashboard</h4>
-        <div class="flex flex-wrap gap-2">
-          <!-- Date picker for specific date -->
+      <h5>Sales Dashboard</h5>
+      <div class="formgroup-inline">
+        <div class="field">
           <div class="p-inputgroup">
-            <span class="p-inputgroup-addon"><i class="pi pi-calendar"></i></span>
+            <span class="p-inputgroup-addon"><i class="pi pi-calendar-times"></i></span>
             <p-calendar [(ngModel)]="selectedDate" (onSelect)="onDateChange()" [inline]="false"
               placeholder="Select Date" [showIcon]="true">
             </p-calendar>
           </div>
-
-          <!-- Month picker -->
+        </div>
+        <div class="field">
           <div class="p-inputgroup">
             <span class="p-inputgroup-addon"><i class="pi pi-calendar-times"></i></span>
             <p-calendar [(ngModel)]="selectedMonth" (onSelect)="onMonthChange()" view="month" dateFormat="mm/yy"
               [inline]="false" placeholder="Select Month" [yearNavigator]="true" [yearRange]="'2020:2030'"
-              [monthNavigator]="true">
+              [monthNavigator]="true" [showIcon]="true">
             </p-calendar>
           </div>
-
-          <!-- Year picker -->
+        </div>
+        <div class="field">
           <div class="p-inputgroup">
-            <span class="p-inputgroup-addon"><i class="pi pi-calendar-clock"></i></span>
+            <span class="p-inputgroup-addon"><i class="pi pi-calendar-times"></i></span>
             <p-calendar [(ngModel)]="selectedYear" (onSelect)="onYearChange()" view="year" dateFormat="yy"
-              [inline]="false" placeholder="Select Year" [yearNavigator]="true" [yearRange]="'2020:2030'">
+              [inline]="false" placeholder="Select Year" [yearNavigator]="true" [yearRange]="'2020:2030'"
+              [showIcon]="true">
             </p-calendar>
           </div>
         </div>
@@ -123,8 +122,10 @@
         <p-chart type="bar" [data]="chartData" [options]="chartOptions" height="500px"></p-chart>
       </div>
       <div class="text-sm text-500 mt-2">
-        <p class="mb-1">Current Period: Sales for selected {{ selectedDate ? 'date' : selectedMonth ? 'month' : selectedYear ? 'year' : 'today' }}</p>
-        <p>Previous Period: Sales for the corresponding previous {{ selectedDate ? 'date' : selectedMonth ? 'month' : selectedYear ? 'year' : 'today' }}</p>
+        <p class="mb-1">Current Period: Sales for selected {{ selectedDate ? 'date' : selectedMonth ? 'month' :
+          selectedYear ? 'year' : 'today' }}</p>
+        <p>Previous Period: Sales for the corresponding previous {{ selectedDate ? 'date' : selectedMonth ? 'month' :
+          selectedYear ? 'year' : 'today' }}</p>
       </div>
     </div>
   </div>
