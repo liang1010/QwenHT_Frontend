@@ -28,10 +28,13 @@ export class SalesComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private salesService: SalesService,
-    private messageService:MessageService
+    private messageService: MessageService
   ) {
+    const d = new Date();
+    d.setDate(d.getDate() - 1);
+    d.setHours(0, 0, 0, 0);
     this.salesForm = this.fb.group({
-      salesDate: [new Date(), Validators.required],
+      salesDate: [d, Validators.required],
       staffId: ['', Validators.required],
       outlet: ['', Validators.required],
       menuId: ['', Validators.required],
@@ -135,10 +138,18 @@ export class SalesComponent implements OnInit {
   }
 
   resetForm(): void {
-    this.salesForm.reset();
+    this.salesForm.get('menuId')?.reset();
+    this.salesForm.get('extraCommission')?.reset();
+    this.salesForm.get('staffCommission')?.reset();
+    this.salesForm.get('footMins')?.reset();
+    this.salesForm.get('bodyMins')?.reset();
+    this.salesForm.get('price')?.reset();
     this.salesForm.patchValue({
-      salesDate: new Date(),
-      status: 0
+      price: 0,
+      bodyMins: 0,
+      footMins: 0,
+      staffCommission: 0,
+      extraCommission: 0
     });
   }
 
@@ -154,6 +165,12 @@ export class SalesComponent implements OnInit {
           next: (response) => {
             console.log('Sales saved successfully:', response);
             // Reset form after successful submission
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Successful',
+              detail: 'Sales Saved',
+              life: 3000
+            });
             this.resetForm();
           },
           error: (error) => {

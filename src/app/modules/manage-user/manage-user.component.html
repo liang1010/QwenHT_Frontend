@@ -97,7 +97,7 @@
       [style]="{'width': '500px','max-height': '600px', 'max-width': '500px', 'overflow': 'auto' }"
       header="User Details" [modal]="true" class="p-fluid">
       <ng-template pTemplate="content">
-        <form [formGroup]="userForm" (ngSubmit)="saveUser()">
+        <form [formGroup]="userForm">
         <div class="p-4">
           <div class="field ">
             <label for="userName">User Name</label>
@@ -145,7 +145,7 @@
 
       <ng-template pTemplate="footer">
         <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
-        <button pButton pRipple label="Save" icon="pi pi-check" type="submit" [disabled]="userForm.invalid"></button>
+        <button pButton pRipple label="Save" icon="pi pi-check" type="submit" (click)="saveUser()" [disabled]="userForm.invalid"></button>
       </ng-template>
     </p-dialog>
 

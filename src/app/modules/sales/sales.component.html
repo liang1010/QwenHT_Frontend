@@ -4,7 +4,7 @@
       <p-toast></p-toast>
       <h5>Sales Entry</h5>
       <p>Enter sales details below</p>
-      <form [formGroup]="salesForm" (ngSubmit)="onSubmit()">
+      <form [formGroup]="salesForm" >
         <div class="p-fluid p-formgrid grid">
           <div class="field col-12 xl:col-4">
             <label for="salesDate">Sales Date *</label>
@@ -113,7 +113,7 @@
           <div class="col-12 p-0 m-0" style="height:0;"></div>
           <div class="field col-12 xl:col-8">
             <button pButton pRipple label="Submit" icon="pi pi-check" type="submit"
-              [disabled]="!salesForm.valid"></button>
+              [disabled]="!salesForm.valid" (click)="onSubmit()"></button>
           </div>
           <div class="field col-12 xl:col-4">
             <button pButton pRipple label="Reset" icon="pi pi-refresh" class="p-button-secondary" type="button"
