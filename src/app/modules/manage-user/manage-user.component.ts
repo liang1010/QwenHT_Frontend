@@ -67,6 +67,7 @@ export class ManageUserComponent implements OnInit, OnDestroy {
 
   private createUserForm(): FormGroup {
     return this.formBuilder.group({
+      id: [],
       userName: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(50)]],
       email: ['', [Validators.required, Validators.email]],
       firstName: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(100)]],
@@ -375,7 +376,7 @@ export class ManageUserComponent implements OnInit, OnDestroy {
     this.dialogService.open(AppChangePasswordDialogComponent, {
       header: 'Change Password',
       width: '500px',
-      contentStyle: {'width': '500px','max-height': '600px', 'max-width': '500px', 'overflow': 'auto' },
+      contentStyle: { 'width': '500px', 'max-height': '600px', 'max-width': '500px', 'overflow': 'auto' },
       baseZIndex: 999,
       data: {
         userId: userId,

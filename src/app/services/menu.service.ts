@@ -32,11 +32,11 @@ export class MenuService {
   }
 
   updateMenu(id: string, menu: Menu): Observable<Menu> {
-    return this.http.put<Menu>(`${this.apiUrl}/${id}`, menu);
+    return this.http.post<Menu>(`${this.apiUrl}/${id}`, menu);
   }
 
   deleteMenu(id: string): Observable<any> {
-    return this.http.delete(`${this.apiUrl}/${id}`);
+    return this.http.post(`${this.apiUrl}/${id}/delete`, {});
   }
 
   getMenusPaginated(page: number, pageSize: number, sortField?: string, sortDirection?: string, searchTerm?: string): Observable<PaginatedResponse<Menu>> {

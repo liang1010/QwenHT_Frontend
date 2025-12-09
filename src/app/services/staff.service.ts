@@ -26,11 +26,11 @@ export class StaffService {
   }
 
   updateStaff(id: string, staff: Staff): Observable<Staff> {
-    return this.http.put<Staff>(`${this.apiUrl}/${id}`, staff);
+    return this.http.post<Staff>(`${this.apiUrl}/${id}`, staff);
   }
 
   deleteStaff(id?: string): Observable<any> {
-    return this.http.delete(`${this.apiUrl}/${id}`);
+    return this.http.post(`${this.apiUrl}/${id}/delete`, {});
   }
 
   // Server-side pagination with sorting and search

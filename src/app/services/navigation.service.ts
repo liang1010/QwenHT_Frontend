@@ -29,11 +29,11 @@ export class NavigationService {
   }
 
   updateNavigationItem(id: string, item: NavigationItem): Observable<NavigationItem> {
-    return this.http.put<NavigationItem>(`${this.apiUrl}/${id}`, item);
+    return this.http.post<NavigationItem>(`${this.apiUrl}/${id}`, item);
   }
 
   deleteNavigationItem(id: string): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/${id}`);
+    return this.http.post<void>(`${this.apiUrl}/${id}/delete`, {});
   }
 
   assignRoleToNavigation(navigationId: string, roleName: string): Observable<void> {
@@ -41,6 +41,6 @@ export class NavigationService {
   }
 
   removeRoleFromNavigation(navigationId: string, roleName: string): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/${navigationId}/roles/${roleName}`);
+    return this.http.post<void>(`${this.apiUrl}/${navigationId}/roles/${roleName}/remove`, {});
   }
 }

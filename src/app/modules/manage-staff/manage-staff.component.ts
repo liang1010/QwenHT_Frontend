@@ -57,6 +57,7 @@ export class ManageStaffComponent implements OnInit, OnDestroy {
   availableTypes: string[] = [];
   availableHostels: string[] = [];
   availableBanks: string[] = [];
+  availableGender: string[] = [];
 
   // Filtered option values for autocomplete
   filteredNationalities: string[] = [];
@@ -64,6 +65,7 @@ export class ManageStaffComponent implements OnInit, OnDestroy {
   filteredTypes: string[] = [];
   filteredHostels: string[] = [];
   filteredBanks: string[] = [];
+  filteredGender: string[] = [];
 
   staffForm: FormGroup;
 
@@ -81,6 +83,7 @@ export class ManageStaffComponent implements OnInit, OnDestroy {
       id: [''],
       fullName: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(255)]],
       nickName: [''],
+      gender: [''],
       phoneNo: ['', [Validators.pattern(/^[\d\-\s\+\(\)]+$/)]],
       nationality: [''],
       hostelName: [''],
@@ -130,6 +133,9 @@ export class ManageStaffComponent implements OnInit, OnDestroy {
 
   loadOptionValues() {
     // Load all option value categories once at initialization
+    this.availableGender = ['Male', 'Female'];
+    this.filteredGender = [...this.availableGender]; // Initialize filtered with all options
+
     this.optionValueService.getOptionValues('Nationality').subscribe({
       next: (options) => {
         this.availableNationalities = options.map(x => x.value).filter(value => value !== undefined) as string[];
@@ -169,6 +175,18 @@ export class ManageStaffComponent implements OnInit, OnDestroy {
       },
       error: (error) => console.error('Error loading banks:', error)
     });
+  }
+
+  searchGender(event: any) {
+    // Filter the already-loaded options on the client side
+    if (event.query && event.query.length >= 1) {
+      const query = event.query.toLowerCase();
+      this.filteredGender = this.availableGender.filter(gender =>
+        gender.toLowerCase().includes(query)
+      );
+    } else {
+      this.filteredGender = [...this.availableGender];
+    }
   }
 
   searchNationalities(event: any) {
@@ -321,6 +339,7 @@ export class ManageStaffComponent implements OnInit, OnDestroy {
       id: staff.id,
       fullName: staff.fullName || '',
       nickName: staff.nickName || '',
+      gender: staff.gender || '',
       phoneNo: staff.phoneNo || '',
       nationality: staff.nationality || '',
       hostelName: staff.hostelName || '',

@@ -26,11 +26,11 @@ export class UserService {
   }
 
   updateUser(id: string, user: User): Observable<User> {
-    return this.http.put<User>(`${this.apiUrl}/${id}`, user);
+    return this.http.post<User>(`${this.apiUrl}/${id}`, user);
   }
 
   deleteUser(id?: string): Observable<any> {
-    return this.http.delete(`${this.apiUrl}/${id}`);
+    return this.http.post(`${this.apiUrl}/${id}/delete`, {});
   }
 
   // Server-side pagination with sorting and search

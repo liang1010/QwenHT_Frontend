@@ -2,6 +2,7 @@ export interface Staff {
   id?: string;
   nickName?: string;
   fullName?: string;
+  gender?: string;
   phoneNo?: string;
   nationality?: string;
   hostelName?: string;

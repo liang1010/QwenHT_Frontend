@@ -29,11 +29,11 @@ export class OptionValueService {
   }
 
   updateOptionValue(id: string, optionValue: OptionValue): Observable<OptionValue> {
-    return this.http.put<OptionValue>(`${this.apiUrl}/${id}`, optionValue);
+    return this.http.post<OptionValue>(`${this.apiUrl}/${id}`, optionValue);
   }
 
   deleteOptionValue(id: string): Observable<any> {
-    return this.http.delete(`${this.apiUrl}/${id}`);
+    return this.http.post(`${this.apiUrl}/${id}/delete`, {});
   }
 
   // Server-side pagination with sorting and search

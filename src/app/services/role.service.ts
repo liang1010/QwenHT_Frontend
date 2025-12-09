@@ -26,11 +26,11 @@ export class RoleService {
   }
 
   updateRole(id: string, role: Role): Observable<Role> {
-    return this.http.put<Role>(`${this.apiUrl}/${id}`, role);
+    return this.http.post<Role>(`${this.apiUrl}/${id}`, role);
   }
 
   deleteRole(id: string): Observable<any> {
-    return this.http.delete(`${this.apiUrl}/${id}`);
+    return this.http.post(`${this.apiUrl}/${id}/delete`, {});
   }
 
   // Server-side pagination with sorting and search

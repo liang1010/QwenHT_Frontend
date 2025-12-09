@@ -108,6 +108,14 @@
                 <label for="nickName">Nick Name</label>
                 <input type="text" pInputText id="nickName" formControlName="nickName" />
               </div>
+
+              <div class="field">
+                <label for="gender">Gender</label>
+                <p-autoComplete id="gender" formControlName="gender" [suggestions]="filteredGender"
+                  (completeMethod)="searchGender($event)" [dropdown]="true" [minLength]="0"
+                  [forceSelection]="true">
+                </p-autoComplete>
+              </div>
               <div class="field">
                 <label for="phoneNo">Phone No</label>
                 <input type="text" pInputText id="phoneNo" formControlName="phoneNo"
