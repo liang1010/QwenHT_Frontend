@@ -1,0 +1,271 @@
+<div class="sales-inquiry-container">
+  <div class="card">
+    <h3>Sales Inquiry</h3>
+
+    <!-- Filter Section -->
+    <div class="filter-section">
+      <form [formGroup]="salesForm" class="p-fluid">
+        <div class="form-row">
+          <div class="field">
+            <label for="startDate">Start Date</label>
+            <p-calendar
+              id="startDate"
+              formControlName="startDate"
+              [showIcon]="true"
+              [readonlyInput]="true">
+            </p-calendar>
+          </div>
+          <div class="field">
+            <label for="endDate">End Date</label>
+            <p-calendar
+              id="endDate"
+              formControlName="endDate"
+              [showIcon]="true"
+              [readonlyInput]="true">
+            </p-calendar>
+          </div>
+          <div class="field">
+            <label for="outlet">Outlet</label>
+            <p-dropdown
+              id="outlet"
+              formControlName="outlet"
+              [options]="outlets"
+              optionLabel="name"
+              optionValue="value"
+              placeholder="Select Outlet">
+            </p-dropdown>
+          </div>
+          <div class="field-buttons">
+            <button
+              type="button"
+              pButton
+              pRipple
+              label="Search"
+              icon="pi pi-search"
+              class="p-button-primary"
+              (click)="applyFilters()">
+            </button>
+            <button
+              type="button"
+              pButton
+              pRipple
+              label="Clear"
+              icon="pi pi-times"
+              class="p-button-secondary"
+              (click)="clearFilters()">
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <!-- Data Table -->
+    <div class="table-section">
+      <p-table
+        [value]="salesRecords"
+        [loading]="loading"
+        dataKey="id"
+        [scrollable]="true">
+
+        <ng-template pTemplate="header">
+          <tr>
+            <th>Sales Date</th>
+            <th>Staff Name</th>
+            <th>Outlet</th>
+            <th>Menu</th>
+            <th>Price</th>
+            <th>Body Mins</th>
+            <th>Foot Mins</th>
+            <th>Staff Commission</th>
+            <th>Actions</th>
+          </tr>
+        </ng-template>
+
+        <ng-template pTemplate="body" let-record>
+          <tr>
+            <td>{{ record.salesDate | date:'shortDate' }}</td>
+            <td>{{ record.staffName }}</td>
+            <td>{{ record.outletName }}</td>
+            <td>{{ record.menuDescription }}</td>
+            <td>{{ record.price | currency }}</td>
+            <td>{{ record.bodyMins }}</td>
+            <td>{{ record.footMins }}</td>
+            <td>{{ record.staffCommission | currency }}</td>
+            <td>
+              <button
+                pButton
+                pRipple
+                icon="pi pi-pencil"
+                class="p-button-rounded p-button-success p-button-text"
+                (click)="openEditDialog(record)"
+                pTooltip="Edit Sales Record"
+                tooltipPosition="top">
+              </button>
+              <button
+                pButton
+                pRipple
+                icon="pi pi-trash"
+                class="p-button-rounded p-button-warning p-button-text"
+                (click)="openDeleteDialog(record.id)"
+                pTooltip="Delete Sales Record"
+                tooltipPosition="top">
+              </button>
+            </td>
+          </tr>
+        </ng-template>
+
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td colspan="9">No sales records found.</td>
+          </tr>
+        </ng-template>
+      </p-table>
+
+      <p-progressSpinner
+        *ngIf="loading && salesRecords.length === 0"
+        [style]="{ 'width': '50px', 'height': '50px' }"
+        styleClass="p-progress-spinner-lg">
+      </p-progressSpinner>
+    </div>
+  </div>
+
+  <!-- Edit Dialog -->
+  <p-dialog
+    header="Edit Sales Record"
+    [(visible)]="showEditDialog"
+    [modal]="true"
+    [closable]="false"
+    [style]="{ width: '600px' }">
+
+    <div class="p-fluid" *ngIf="editRecord">
+      <div class="field">
+        <label for="editSalesDate">Sales Date</label>
+        <p-calendar
+          id="editSalesDate"
+          [(ngModel)]="editRecord.salesDate"
+          [showIcon]="true">
+        </p-calendar>
+      </div>
+      <div class="field">
+        <label for="editStaffName">Staff Name</label>
+        <p-inputText
+          id="editStaffName"
+          [(ngModel)]="editRecord.staffName"
+          [disabled]="true">
+        </p-inputText>
+      </div>
+      <div class="field">
+        <label for="editOutletName">Outlet</label>
+        <p-inputText
+          id="editOutletName"
+          [(ngModel)]="editRecord.outletName"
+          [disabled]="true">
+        </p-inputText>
+      </div>
+      <div class="field">
+        <label for="editMenu">Menu</label>
+        <p-inputText
+          id="editMenu"
+          [(ngModel)]="editRecord.menuDescription"
+          [disabled]="true">
+        </p-inputText>
+      </div>
+      <div class="field">
+        <label for="editPrice">Price</label>
+        <p-inputNumber
+          id="editPrice"
+          [(ngModel)]="editRecord.price"
+          mode="currency"
+          currency="USD"
+          locale="en-US">
+        </p-inputNumber>
+      </div>
+      <div class="field">
+        <label for="editBodyMins">Body Mins</label>
+        <p-inputNumber
+          id="editBodyMins"
+          [(ngModel)]="editRecord.bodyMins">
+        </p-inputNumber>
+      </div>
+      <div class="field">
+        <label for="editFootMins">Foot Mins</label>
+        <p-inputNumber
+          id="editFootMins"
+          [(ngModel)]="editRecord.footMins">
+        </p-inputNumber>
+      </div>
+      <div class="field">
+        <label for="editStaffCommission">Staff Commission</label>
+        <p-inputNumber
+          id="editStaffCommission"
+          [(ngModel)]="editRecord.staffCommission"
+          mode="currency"
+          currency="USD"
+          locale="en-US">
+        </p-inputNumber>
+      </div>
+      <div class="field">
+        <label for="editRemark">Remark</label>
+        <p-inputText
+          id="editRemark"
+          [(ngModel)]="editRecord.remark">
+        </p-inputText>
+      </div>
+    </div>
+
+    <ng-template pTemplate="footer">
+      <button
+        type="button"
+        pButton
+        pRipple
+        label="Cancel"
+        icon="pi pi-times"
+        class="p-button-text"
+        (click)="onCancelEdit()">
+      </button>
+      <button
+        type="button"
+        pButton
+        pRipple
+        label="Save"
+        icon="pi pi-check"
+        class="p-button-text"
+        (click)="saveRecord()">
+      </button>
+    </ng-template>
+  </p-dialog>
+
+  <!-- Delete Confirmation Dialog -->
+  <p-confirmDialog [style]="{ width: '450px' }" [baseZIndex]="10000"></p-confirmDialog>
+
+  <p-dialog
+    header="Confirm Delete"
+    [(visible)]="showDeleteDialog"
+    [modal]="true"
+    [closable]="false"
+    [style]="{ width: '350px' }">
+
+    <p>Are you sure you want to delete this sales record?</p>
+
+    <ng-template pTemplate="footer">
+      <button
+        type="button"
+        pButton
+        pRipple
+        label="No"
+        icon="pi pi-times"
+        class="p-button-text"
+        (click)="onCancelDelete()">
+      </button>
+      <button
+        type="button"
+        pButton
+        pRipple
+        label="Yes"
+        icon="pi pi-check"
+        class="p-button-danger p-button-text"
+        (click)="deleteRecord()">
+      </button>
+    </ng-template>
+  </p-dialog>
+</div>

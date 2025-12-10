@@ -35,6 +35,10 @@ import { LoggedInGuard } from './guards/logged-in.guard';
             loadChildren: () => import('./modules/sales/sales.module').then(m => m.SalesModule)
           },
           {
+            path: 'inquiry-sales',
+            loadChildren: () => import('./modules/inquiry-sales/inquiry-sales.module').then(m => m.InquirySalesModule)
+          },
+          {
 
             path: 'manage',
             children: [

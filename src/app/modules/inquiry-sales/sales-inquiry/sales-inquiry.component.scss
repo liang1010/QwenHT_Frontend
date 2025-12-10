@@ -1,0 +1,66 @@
+.sales-inquiry-container {
+  padding: 1rem;
+  
+  .card {
+    h3 {
+      margin-top: 0;
+      margin-bottom: 1rem;
+    }
+    
+    .filter-section {
+      margin-bottom: 1.5rem;
+      
+      .form-row {
+        display: flex;
+        gap: 1rem;
+        align-items: flex-end;
+        
+        .field {
+          flex: 1;
+          min-width: 0; /* Allows flex items to shrink below their content size */
+        }
+        
+        .field-buttons {
+          display: flex;
+          gap: 0.5rem;
+          
+          button {
+            margin-right: 0.5rem;
+            
+            &:last-child {
+              margin-right: 0;
+            }
+          }
+        }
+      }
+    }
+    
+    .table-section {
+      position: relative;
+      
+      .p-datatable-wrapper {
+        max-height: 500px;
+        overflow-y: auto;
+      }
+      
+      .p-progress-spinner {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+      }
+    }
+  }
+}
+
+/* Responsive adjustments */
+@media screen and (max-width: 960px) {
+  .sales-inquiry-container .filter-section .form-row {
+    flex-direction: column;
+    align-items: stretch;
+    
+    .field-buttons {
+      margin-top: 0.5rem;
+    }
+  }
+}
