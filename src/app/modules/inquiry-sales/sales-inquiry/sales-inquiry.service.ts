@@ -50,7 +50,7 @@ export class SalesInquiryService {
     }
     if (filters.endDate) {
       const endDate = new Date(filters.endDate);
-      const endDateStr = endDate.toISOString().split('T')[0];
+      const endDateStr = endDate.toISOString();
       params += `&endDate=${endDateStr}`;
     }
     if (filters.outlet) {

@@ -27,6 +27,12 @@ export class SalesInquiryComponent implements OnInit, OnDestroy {
   showDeleteDialog = false;
   deleteRecordId: string | null = null;
 
+  // Totals for the table footer
+  totalPrice = 0;
+  totalBodyMins = 0;
+  totalFootMins = 0;
+  totalStaffCommission = 0;
+
   private destroy$ = new Subject<void>();
 
   constructor(
@@ -72,10 +78,11 @@ export class SalesInquiryComponent implements OnInit, OnDestroy {
 
     const filters = this.salesForm.value;
     // Fetch a reasonable number of records (e.g., 100) but not all records to avoid performance issues
-    this.salesInquiryService.getSalesRecords(filters, 0, 1000).pipe(takeUntil(this.destroy$)).subscribe({
+    this.salesInquiryService.getSalesRecords(filters, 0, 5000).pipe(takeUntil(this.destroy$)).subscribe({
       next: (response: any) => {
         this.salesRecords = [...response.data];
         this.totalRecords = response.totalCount;
+        this.calculateTotals();
         this.loading = false;
       },
       error: (error) => {
@@ -176,5 +183,12 @@ export class SalesInquiryComponent implements OnInit, OnDestroy {
   onCancelDelete(): void {
     this.showDeleteDialog = false;
     this.deleteRecordId = null;
+  }
+
+  calculateTotals(): void {
+    this.totalPrice = this.salesRecords.reduce((sum, record) => sum + record.price, 0);
+    this.totalBodyMins = this.salesRecords.reduce((sum, record) => sum + record.bodyMins, 0);
+    this.totalFootMins = this.salesRecords.reduce((sum, record) => sum + record.footMins, 0);
+    this.totalStaffCommission = this.salesRecords.reduce((sum, record) => sum + record.staffCommission, 0);
   }
 }

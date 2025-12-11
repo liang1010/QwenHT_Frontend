@@ -114,6 +114,17 @@
           </tr>
         </ng-template>
 
+        <ng-template pTemplate="footer">
+          <tr>
+            <td colspan="4" class="text-right"><strong>Totals:</strong></td>
+            <td><strong>{{ totalPrice | currency }}</strong></td>
+            <td><strong>{{ totalBodyMins }}</strong></td>
+            <td><strong>{{ totalFootMins }}</strong></td>
+            <td><strong>{{ totalStaffCommission | currency }}</strong></td>
+            <td></td>
+          </tr>
+        </ng-template>
+
         <ng-template pTemplate="emptymessage">
           <tr>
             <td colspan="9">No sales records found.</td>
