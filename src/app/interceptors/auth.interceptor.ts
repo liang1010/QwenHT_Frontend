@@ -24,6 +24,9 @@ export class AuthInterceptor implements HttpInterceptor {
     return next.handle(authReq).pipe(
       catchError((error: any) => { // Explicitly type error as any
         if (error instanceof HttpErrorResponse && error.status === 401) {
+          if(req.url.includes('refresh-token')){
+            this.authService.logout();
+          }
           console.log("AuthInterceptor: 401 received, attempting refresh for URL:", req.url);
 
           // Attempt to refresh token and retry request

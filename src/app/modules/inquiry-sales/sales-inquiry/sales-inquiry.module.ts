@@ -22,7 +22,7 @@ import { PrimeNgModule } from '../../primeng.module';
   imports: [
     CommonModule,
     SalesInquiryRoutingModule,
-        PrimeNgModule,
+    PrimeNgModule
   ]
 })
 export class SalesInquiryModule { }
