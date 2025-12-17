@@ -32,11 +32,20 @@ import { LoggedInGuard } from './guards/logged-in.guard';
           },
           {
             path: 'sales',
-            loadChildren: () => import('./modules/sales/sales.module').then(m => m.SalesModule)
-          },
-          {
-            path: 'inquiry-sales',
-            loadChildren: () => import('./modules/inquiry-sales/inquiry-sales.module').then(m => m.InquirySalesModule)
+            children: [
+              {
+                path: 'key-in',
+                loadChildren: () => import('./modules/sales/sales.module').then(m => m.SalesModule)
+              },
+              {
+                path: 'inquiry',
+                loadChildren: () => import('./modules/inquiry-sales/inquiry-sales.module').then(m => m.InquirySalesModule)
+              },
+              {
+                path: 'summary',
+                loadChildren: () => import('./modules/inquiry-sales/sales-summary/sales-summary.module').then(m => m.SalesSummaryModule)
+              }
+            ]
           },
           {
 

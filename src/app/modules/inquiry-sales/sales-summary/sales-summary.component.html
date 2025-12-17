@@ -1,0 +1,88 @@
+<div class="container">
+  <div class="card">
+    <p-toast></p-toast>
+    <h3>Sales Summary</h3>
+
+    <!-- Filter Section -->
+    <div class="filter-section">
+      <form [formGroup]="summaryForm" class="p-fluid">
+        <div class="form-row">
+          <div class="field">
+            <label for="dateRange">Date Range</label>
+            <p-calendar id="dateRange" formControlName="dateRange" selectionMode="range" [showIcon]="true"
+              [readonlyInput]="true" [selectOtherMonths]="true">
+            </p-calendar>
+            <small *ngIf="summaryForm.get('dateRange')?.invalid && summaryForm.get('dateRange')?.touched && summaryForm.get('dateRange')?.errors?.['required']"
+              class="p-error">Date range is required.</small>
+          </div>
+          <div class="field">
+            <label for="category">Category</label>
+            <p-dropdown id="category" formControlName="category" [options]="categoryOptions" optionLabel="label"
+              optionValue="value" placeholder="Select Category">
+            </p-dropdown>
+            <small *ngIf="summaryForm.get('category')?.invalid && summaryForm.get('category')?.errors?.['required']"
+              class="p-error">Category is required.</small>
+          </div>
+          <div class="field">
+            <label for="outlet">Outlet</label>
+            <p-dropdown id="outlet" formControlName="outlet" [options]="outlets" optionLabel="value" optionValue="value"
+              placeholder="Select Outlet">
+            </p-dropdown>
+            <small *ngIf="summaryForm.get('outlet')?.invalid && summaryForm.get('outlet')?.errors?.['required']"
+              class="p-error">Outlet is required.</small>
+          </div>
+          <div class="field-buttons">
+            <button type="button" pButton pRipple label="Search" icon="pi pi-search" class="p-button-primary"
+              (click)="getSalesSummary()" [disabled]="summaryForm.invalid || loading">
+              <i *ngIf="loading" class="pi pi-spin pi-spinner" style="margin-left: 0.5rem;"></i>
+            </button>
+            <button type="button" pButton pRipple label="Clear" icon="pi pi-times" class="p-button-secondary"
+              (click)="clearFilters()">
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <!-- Data Table -->
+    <div class="table-section">
+      <p-table [value]="summaryData" [loading]="loading" dataKey="code">
+        <ng-template pTemplate="header">
+          <tr>
+            <th style="width: 15%">Code</th>
+            <th style="width: 35%">Description</th>
+            <th style="width: 15%; text-align: right">Price</th>
+            <th style="width: 15%; text-align: right">Sale Count</th>
+            <th style="width: 20%; text-align: right">Total Sales</th>
+          </tr>
+        </ng-template>
+
+        <ng-template pTemplate="body" let-item>
+          <tr>
+            <td style="width: 15%">{{ item.code }}</td>
+            <td style="width: 35%">{{ item.description }}</td>
+            <td style="width: 15%; text-align: right;">{{ item.price | localCurrency }}</td>
+            <td style="width: 15%; text-align: right;">{{ item.saleCount }}</td>
+            <td style="width: 20%; text-align: right;">{{ item.totalSales | localCurrency }}</td>
+          </tr>
+        </ng-template>
+
+        <ng-template pTemplate="footer">
+          <tr>
+            <td style="width: 15%"></td>
+            <td style="width: 35%; text-align: right;"><strong>Totals:</strong></td>
+            <td style="width: 15%; text-align: right;"><strong>{{ totalSalePrice| localCurrency}}</strong></td>
+            <td style="width: 15%; text-align: right;"><strong>{{ totalSaleCount }}</strong></td>
+            <td style="width: 20%; text-align: right;"><strong>{{ totalSalesAmount | localCurrency }}</strong></td>
+          </tr>
+        </ng-template>
+
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td colspan="5">No sales summary data found.</td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+  </div>
+</div>
