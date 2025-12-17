@@ -17,10 +17,11 @@ export class SalesInquiryComponent implements OnInit, OnDestroy {
   salesRecords: SalesRecord[] = [];
   outlets: OptionValue[] = [];
 
-  // For virtual scrolling and pagination
+  // For pagination
   totalRecords = 0;
   loading = false;
-  rows = 20; // Number of records to load per batch
+  rows = 10; // Number of records per page
+  first = 0; // First record offset
 
   // Forms for editing/deleting
   editRecord: SalesRecord | null = null;
@@ -28,15 +29,20 @@ export class SalesInquiryComponent implements OnInit, OnDestroy {
   showDeleteDialog = false;
   deleteRecordId: string | null = null;
 
-  // Totals for the table footer
+  rowsPerPageOptions = [5, 10, 20, { showAll: 'All' }];
+  // Totals for the table footer (from backend)
   totalPrice = 0;
   totalBodyMins = 0;
   totalFootMins = 0;
+  totalExtraCommission = 0;
   totalStaffCommission = 0;
+  totalRequest = 0;
+  totalFootCream = 0;
+  totalOil = 0;
 
-  // Properties for scroll buttons
+  // Properties for scroll buttons (will be disabled with pagination)
   showScrollTopBtn = false;
-  showScrollBottomBtn = true;
+  showScrollBottomBtn = false;
 
   private scrollHandler = () => this.onWindowScroll();
 
@@ -132,12 +138,30 @@ export class SalesInquiryComponent implements OnInit, OnDestroy {
       outlet: formValue.outlet
     };
 
-    // Fetch a reasonable number of records (e.g., 100) but not all records to avoid performance issues
-    this.salesInquiryService.getSalesRecords(filters, 0, 5000).pipe(takeUntil(this.destroy$)).subscribe({
-      next: (response: any) => {
+    // Calculate page number from first and rows
+    const page = Math.floor(this.first / this.rows) + 1;
+    const pageSize = this.rows;
+
+    // Fetch records with pagination
+    this.salesInquiryService.getSalesRecords(filters, page, pageSize).pipe(takeUntil(this.destroy$)).subscribe({
+      next: (response) => {
         this.salesRecords = [...response.data];
         this.totalRecords = response.totalCount;
-        this.calculateTotals();
+
+        // If the backend provides aggregated totals, use them instead of calculating from current page
+        if (response.aggregatePrice !== undefined) {
+          this.totalPrice = response.aggregatePrice;
+          this.totalBodyMins = response.aggregateBodyMins || 0;
+          this.totalFootMins = response.aggregateFootMins || 0;
+          this.totalExtraCommission = response.aggregateExtraCommission || 0;
+          this.totalStaffCommission = response.aggregateStaffCommission || 0;
+          this.totalRequest = response.aggregateRequest || 0;
+          this.totalOil = response.aggregateOil || 0;
+          this.totalFootCream = response.aggregateFootCream || 0;
+        } else {
+          // Calculate totals from current page if backend doesn't provide aggregates
+          this.calculateTotals();
+        }
         this.loading = false;
       },
       error: (error) => {
@@ -181,6 +205,8 @@ export class SalesInquiryComponent implements OnInit, OnDestroy {
       return;
     }
 
+    // Reset to first page when applying filters
+    this.first = 0;
     this.loadInitialData();
   }
 
@@ -189,13 +215,15 @@ export class SalesInquiryComponent implements OnInit, OnDestroy {
     // Explicitly clear the controls to ensure proper reset
     this.salesForm.controls['dateRange'].setValue(null);
     this.salesForm.controls['outlet'].setValue(null);
+    // Reset to first page when clearing filters
+    this.first = 0;
     this.loadInitialData();
   }
 
   openEditDialog(record: SalesRecord): void {
     this.editRecord = { ...record };
     this.editForm.patchValue({
-      salesDate: record.salesDate,
+      salesDate: new Date(record.salesDate),
       staffName: record.staffName,
       outletName: record.outletName,
       menuDescription: record.menuDescription,
@@ -209,6 +237,13 @@ export class SalesInquiryComponent implements OnInit, OnDestroy {
       footCream: record.footCream || false,
       oil: record.oil || false
     });
+    this.editForm.get('salesDate')?.disable();
+    this.editForm.get('staffName')?.disable();
+    this.editForm.get('outletName')?.disable();
+    this.editForm.get('menuDescription')?.disable();
+    this.editForm.get('bodyMins')?.disable();
+    this.editForm.get('footMins')?.disable();
+    this.editForm.get('salesDate')?.disable();
     this.showEditDialog = true;
   }
 
@@ -346,6 +381,12 @@ export class SalesInquiryComponent implements OnInit, OnDestroy {
 
   scrollToBottom(): void {
     window.scrollTo({ top: document.documentElement.scrollHeight, behavior: 'smooth' });
+  }
+
+  onPage(event: any) {
+    this.first = event.first;
+    this.rows = event.rows;
+    this.loadInitialData();
   }
 
   onWindowScroll(): void {

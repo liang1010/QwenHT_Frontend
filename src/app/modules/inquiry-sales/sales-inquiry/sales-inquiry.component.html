@@ -43,18 +43,25 @@
 
     <!-- Data Table -->
     <div class="table-section">
-      <p-table [value]="salesRecords" dataKey="id" [scrollable]="true">
+      <p-table [value]="salesRecords" dataKey="id" [scrollable]="true" [paginator]="true" [rows]="rows"
+        [rowsPerPageOptions]="rowsPerPageOptions" [showCurrentPageReport]="true" [totalRecords]="totalRecords"
+        [lazy]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+        (onPage)="onPage($event)">
 
         <ng-template pTemplate="header">
           <tr>
             <th style="width: 10%">Sales Date</th>
             <th style="width: 12%">Staff Name</th>
-            <th style="width: 10%">Outlet</th>
-            <th style="width: 15%">Menu</th>
-            <th style="width: 8%">Price</th>
+            <th style="width: 5%">Outlet</th>
+            <th style="width: 10%">Menu</th>
             <th style="width: 7%">Body Mins</th>
             <th style="width: 7%">Foot Mins</th>
             <th style="width: 9%">Staff Commission</th>
+            <th style="width: 9%">Extra Commission</th>
+            <th style="width: 8%">Price</th>
+            <th style="">Request</th>
+            <th style="">Foot Cream</th>
+            <th style="">Oil</th>
             <th style="width: 12%">Actions</th>
           </tr>
         </ng-template>
@@ -63,12 +70,22 @@
           <tr>
             <td style="width: 10%">{{ record.salesDate | date:'shortDate' }}</td>
             <td style="width: 12%">{{ record.staffName }}</td>
-            <td style="width: 10%">{{ record.outletName }}</td>
-            <td style="width: 15%">{{ record.menuDescription }}</td>
-            <td style="width: 8%; text-align: right;">{{ record.price | localCurrency }}</td>
+            <td style="width: 5%">{{ record.outletName }}</td>
+            <td style="width: 10%">{{ record.menuDescription }}</td>
             <td style="width: 7%; text-align: center;">{{ record.bodyMins }}</td>
             <td style="width: 7%; text-align: center;">{{ record.footMins }}</td>
             <td style="width: 9%; text-align: right;">{{ record.staffCommission | localCurrency }}</td>
+            <td style="width: 9%; text-align: right;">{{ record.extraCommission | localCurrency }}</td>
+            <td style="width: 8%; text-align: right;">{{ record.price | localCurrency }}</td>
+            <td style="width: 3%; text-align: center;">
+              <p-checkbox [(ngModel)]="record.request" [binary]="true"></p-checkbox>
+            </td>
+            <td style="width: 3%; text-align: center;">
+              <p-checkbox [(ngModel)]="record.footCream" [binary]="true"></p-checkbox>
+            </td>
+            <td style="width: 3%; text-align: center;">
+              <p-checkbox [(ngModel)]="record.oil" [binary]="true"></p-checkbox>
+            </td>
             <td style="width: 12%">
               <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success p-button-text"
                 (click)="openEditDialog(record)" pTooltip="Edit Sales Record" tooltipPosition="top">
@@ -83,11 +100,15 @@
         <ng-template pTemplate="footer">
           <tr>
             <td colspan="3" style="width: 47%; text-align: right;"><strong>Totals:</strong></td>
-            <td style="width: 8%; text-align: right;"><strong>{{ salesRecords.length }}</strong></td>
-            <td style="width: 8%; text-align: right;"><strong>{{ totalPrice | localCurrency }}</strong></td>
+            <td style="width: 10%; text-align: right;"><strong>{{ totalRecords }}</strong></td>
             <td style="width: 7%; text-align: center;"><strong>{{ totalBodyMins }}</strong></td>
             <td style="width: 7%; text-align: center;"><strong>{{ totalFootMins }}</strong></td>
+            <td style="width: 9%; text-align: right;"><strong>{{ totalExtraCommission | localCurrency }}</strong></td>
             <td style="width: 9%; text-align: right;"><strong>{{ totalStaffCommission | localCurrency }}</strong></td>
+            <td style="width: 8%; text-align: right;"><strong>{{ totalPrice | localCurrency }}</strong></td>
+            <td style="width: 3%; text-align: center;"><strong>{{ totalRequest }}</strong></td>
+            <td style="width: 3%; text-align: center;"><strong>{{ totalFootCream }}</strong></td>
+            <td style="width: 3%; text-align: center;"><strong>{{ totalOil }}</strong></td>
             <td style="width: 12%"></td>
           </tr>
         </ng-template>
@@ -101,138 +122,141 @@
     </div>
   </div>
 
-  <!-- Floating Scroll Buttons -->
-  <div class="floating-scroll-buttons">
-    <button
-      pButton
-      pRipple
-      icon="pi pi-arrow-up"
-      class="p-button-rounded p-button-primary scroll-top-btn"
-      (click)="scrollToTop()"
-      *ngIf="showScrollTopBtn"
-      pTooltip="Scroll to Top"
-      tooltipPosition="left">
+  <!-- Floating Scroll Buttons - Hidden when pagination is enabled -->
+  <div class="floating-scroll-buttons" *ngIf="false">
+    <button pButton pRipple icon="pi pi-arrow-up" class="p-button-rounded p-button-primary scroll-top-btn"
+      (click)="scrollToTop()" *ngIf="showScrollTopBtn" pTooltip="Scroll to Top" tooltipPosition="left">
     </button>
-    <button
-      pButton
-      pRipple
-      icon="pi pi-arrow-down"
-      class="p-button-rounded p-button-primary scroll-bottom-btn"
-      (click)="scrollToBottom()"
-      *ngIf="showScrollBottomBtn"
-      pTooltip="Scroll to Bottom"
-      tooltipPosition="left">
+    <button pButton pRipple icon="pi pi-arrow-down" class="p-button-rounded p-button-primary scroll-bottom-btn"
+      (click)="scrollToBottom()" *ngIf="showScrollBottomBtn" pTooltip="Scroll to Bottom" tooltipPosition="left">
     </button>
   </div>
 
 
   <!-- Edit Dialog -->
-    <p-dialog [(visible)]="showEditDialog" [style]="{'width': '700px',  'max-width': '700px', 'overflow': 'auto' }"
-      header="Edit Sales Record" [modal]="true" class="p-fluid">
+  <p-dialog [(visible)]="showEditDialog" [style]="{'width': '1080px',  'max-width': '1080px', 'overflow': 'auto' }"
+    header="Edit Sales Record" [modal]="true" class="p-fluid">
 
 
-      <form [formGroup]="editForm" class="p-fluid">
-        <div class="field">
+    <form [formGroup]="editForm" class="p-fluid">
+      <div class="p-fluid p-formgrid grid">
+        <div class="field col-12 xl:col-4">
           <label for="editSalesDate">Sales Date</label>
-          <p-calendar id="editSalesDate" formControlName="salesDate" [showIcon]="true">
+          <p-calendar id="editSalesDate" formControlName="salesDate" [showIcon]="false" [disabled]="true">
           </p-calendar>
-          <small *ngIf="editForm.get('salesDate')?.invalid && editForm.get('salesDate')?.errors?.['required']"
-            class="p-error">Sales date is required.</small>
         </div>
-        <div class="field">
-          <label for="editStaffName">Staff Name</label>
-          <input type="text" pInputText id="editStaffName" formControlName="staffName" [readOnly]="true" />
-        </div>
-        <div class="field">
+
+        <div class="field col-12 xl:col-4">
           <label for="editOutletName">Outlet</label>
           <input type="text" pInputText id="editOutletName" formControlName="outletName" [readOnly]="true" />
         </div>
-        <div class="field">
+
+        <div class="col-12 p-0 m-0" style="height:0;"></div>
+        <div class="field col-12 xl:col-4">
+          <label for="editStaffName">Staff</label>
+          <input type="text" pInputText id="editStaffName" formControlName="staffName" [readOnly]="true" />
+        </div>
+        <div class="col-12 p-0 m-0" style="height:0;"></div>
+        <div class="field col-12 xl:col-4">
           <label for="editMenu">Menu</label>
           <input type="text" pInputText id="editMenu" formControlName="menuDescription" [readOnly]="true" />
         </div>
-        <div class="field">
-          <label for="editPrice">Price</label>
-          <p-inputNumber id="editPrice" formControlName="price" mode="currency" currency="USD" locale="en-US">
-          </p-inputNumber>
-          <small *ngIf="editForm.get('price')?.invalid && editForm.get('price')?.errors?.['required']"
-            class="p-error">Price is required.</small>
-          <small *ngIf="editForm.get('price')?.invalid && editForm.get('price')?.errors?.['min']" class="p-error">Price
-            must be greater than or equal to 0.</small>
-        </div>
-        <div class="field">
-          <label for="editBodyMins">Body Mins</label>
-          <p-inputNumber id="editBodyMins" formControlName="bodyMins">
-          </p-inputNumber>
-          <small *ngIf="editForm.get('bodyMins')?.invalid && editForm.get('bodyMins')?.errors?.['min']"
-            class="p-error">Body Mins must be greater than or equal to 0.</small>
-        </div>
-        <div class="field">
+        <div class="col-12 p-0 m-0" style="height:0;"></div>
+        <div class="field col-12 xl:col-2">
           <label for="editFootMins">Foot Mins</label>
           <p-inputNumber id="editFootMins" formControlName="footMins">
           </p-inputNumber>
           <small *ngIf="editForm.get('footMins')?.invalid && editForm.get('footMins')?.errors?.['min']"
             class="p-error">Foot Mins must be greater than or equal to 0.</small>
         </div>
-        <div class="field">
+        <div class="field col-12 xl:col-2">
+          <label for="editBodyMins">Body Mins</label>
+          <p-inputNumber id="editBodyMins" formControlName="bodyMins">
+          </p-inputNumber>
+          <small *ngIf="editForm.get('bodyMins')?.invalid && editForm.get('bodyMins')?.errors?.['min']"
+            class="p-error">Body Mins must be greater than or equal to 0.</small>
+        </div>
+        <div class="field col-12 xl:col-2">
           <label for="editStaffCommission">Staff Commission</label>
-          <p-inputNumber id="editStaffCommission" formControlName="staffCommission" mode="currency" currency="USD"
+          <p-inputNumber id="editStaffCommission" formControlName="staffCommission" mode="currency" currency="MYR"
             locale="en-US">
           </p-inputNumber>
           <small *ngIf="editForm.get('staffCommission')?.invalid && editForm.get('staffCommission')?.errors?.['min']"
             class="p-error">Staff Commission must be greater than or equal to 0.</small>
         </div>
-        <div class="field">
+        <div class="field col-12 xl:col-2">
           <label for="editExtraCommission">Extra Commission</label>
-          <p-inputNumber id="editExtraCommission" formControlName="extraCommission" mode="currency" currency="USD"
+          <p-inputNumber id="editExtraCommission" formControlName="extraCommission" mode="currency" currency="MYR"
             locale="en-US">
           </p-inputNumber>
           <small *ngIf="editForm.get('extraCommission')?.invalid && editForm.get('extraCommission')?.errors?.['min']"
             class="p-error">Extra Commission must be greater than or equal to 0.</small>
         </div>
-        <div class="field">
+        <div class="field col-12 xl:col-2">
+          <label for="editPrice">Price</label>
+          <p-inputNumber id="editPrice" formControlName="price" mode="currency" currency="MYR" locale="en-US">
+          </p-inputNumber>
+          <small *ngIf="editForm.get('price')?.invalid && editForm.get('price')?.errors?.['required']"
+            class="p-error">Price is required.</small>
+          <small *ngIf="editForm.get('price')?.invalid && editForm.get('price')?.errors?.['min']" class="p-error">Price
+            must be greater than or equal to 0.</small>
+        </div>
+        <div class="col-12 p-0 m-0" style="height:0;"></div>
+        <div class="field col-12 xl:col-2">
+          <div class="field-checkbox">
+            <p-checkbox id="editRequest" formControlName="request" [binary]="true"></p-checkbox>
+            <label for="editRequest">Request</label>
+          </div>
+        </div>
+        <div class="field col-12 xl:col-2">
+          <div class="field-checkbox">
+            <p-checkbox id="editOil" formControlName="oil" [binary]="true"></p-checkbox>
+            <label for="editOil">Oil</label>
+          </div>
+        </div>
+        <div class="field col-12 xl:col-2">
+          <div class="field-checkbox">
+            <p-checkbox id="editFootCream" formControlName="footCream" [binary]="true"></p-checkbox>
+            <label for="editFootCream">Foot Cream</label>
+          </div>
+        </div>
+
+        <div class="col-12 p-0 m-0" style="height:0;"></div>
+        <div class="field col-12 xl:col-6">
           <label for="editRemark">Remark</label>
-          <input type="text" pInputText id="editRemark" formControlName="remark" />
+          <textarea pInputTextarea id="editRemark" formControlName="remark" rows="3" cols="30">
+              </textarea>
         </div>
-        <div class="field-checkbox">
-          <p-checkbox id="editRequest" formControlName="request" [binary]="true"></p-checkbox>
-          <label for="editRequest">Request</label>
-        </div>
-        <div class="field-checkbox">
-          <p-checkbox id="editFootCream" formControlName="footCream" [binary]="true"></p-checkbox>
-          <label for="editFootCream">Foot Cream</label>
-        </div>
-        <div class="field-checkbox">
-          <p-checkbox id="editOil" formControlName="oil" [binary]="true"></p-checkbox>
-          <label for="editOil">Oil</label>
-        </div>
-      </form>
 
-      <ng-template pTemplate="footer">
-        <button type="button" pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text"
-          (click)="onCancelEdit()">
-        </button>
-        <button type="button" pButton pRipple label="Save" icon="pi pi-check" class="p-button-text"
-          (click)="saveRecord()">
-        </button>
-      </ng-template>
-    </p-dialog>
 
-    <!-- Delete Confirmation Dialog -->
-    <p-confirmDialog [style]="{ width: '450px' }" [baseZIndex]="10000"></p-confirmDialog>
+      </div>
+    </form>
 
-    <p-dialog header="Confirm Delete" [(visible)]="showDeleteDialog" [modal]="true" [closable]="false"
-      [style]="{ width: '350px' }">
+    <ng-template pTemplate="footer">
+      <button type="button" pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text"
+        (click)="onCancelEdit()">
+      </button>
+      <button type="button" pButton pRipple label="Save" icon="pi pi-check" class="p-button-text"
+        (click)="saveRecord()">
+      </button>
+    </ng-template>
+  </p-dialog>
 
-      <p>Are you sure you want to delete this sales record?</p>
+  <!-- Delete Confirmation Dialog -->
+  <p-confirmDialog [style]="{ width: '450px' }" [baseZIndex]="10000"></p-confirmDialog>
 
-      <ng-template pTemplate="footer">
-        <button type="button" pButton pRipple label="No" icon="pi pi-times" class="p-button-text"
-          (click)="onCancelDelete()">
-        </button>
-        <button type="button" pButton pRipple label="Yes" icon="pi pi-check" class="p-button-danger p-button-text"
-          (click)="deleteRecord()">
-        </button>
-      </ng-template>
-    </p-dialog>
+  <p-dialog header="Confirm Delete" [(visible)]="showDeleteDialog" [modal]="true" [closable]="false"
+    [style]="{ width: '350px' }">
+
+    <p>Are you sure you want to delete this sales record?</p>
+
+    <ng-template pTemplate="footer">
+      <button type="button" pButton pRipple label="No" icon="pi pi-times" class="p-button-text"
+        (click)="onCancelDelete()">
+      </button>
+      <button type="button" pButton pRipple label="Yes" icon="pi pi-check" class="p-button-danger p-button-text"
+        (click)="deleteRecord()">
+      </button>
+    </ng-template>
+  </p-dialog>
 </div>

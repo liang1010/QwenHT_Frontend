@@ -137,15 +137,15 @@
           </div>
           <div class="field">
             <label for="staffCommission">Staff Commission</label>
-            <p-inputNumber id="staffCommission" [(ngModel)]="menu.staffCommission" mode="currency" currency="USD" [locale]="'en-US'"></p-inputNumber>
+            <p-inputNumber id="staffCommission" [(ngModel)]="menu.staffCommission" mode="currency" currency="MYR" [locale]="'en-US'"></p-inputNumber>
           </div>
           <div class="field">
             <label for="extraCommission">Extra Commission</label>
-            <p-inputNumber id="extraCommission" [(ngModel)]="menu.extraCommission" mode="currency" currency="USD" [locale]="'en-US'"></p-inputNumber>
+            <p-inputNumber id="extraCommission" [(ngModel)]="menu.extraCommission" mode="currency" currency="MYR" [locale]="'en-US'"></p-inputNumber>
           </div>
           <div class="field">
             <label for="price">Price *</label>
-            <p-inputNumber id="price" [(ngModel)]="menu.price" mode="currency" currency="USD" [locale]="'en-US'"
+            <p-inputNumber id="price" [(ngModel)]="menu.price" mode="currency" currency="MYR" [locale]="'en-US'"
               [ngClass]="{'ng-invalid ng-dirty': submitted && menu.price === undefined}"></p-inputNumber>
             <small class="ng-dirty ng-invalid" *ngIf="submitted && menu.price === undefined">Price is required.</small>
           </div>

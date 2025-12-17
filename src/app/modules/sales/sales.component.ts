@@ -77,8 +77,8 @@ export class SalesComponent implements OnInit {
     });
 
     this.salesService.getOutlets().subscribe(data => {
-
       this.outlets = data;
+      this.outlets = this.outlets.filter(x => x.value != 'ALL');
     });
   }
 

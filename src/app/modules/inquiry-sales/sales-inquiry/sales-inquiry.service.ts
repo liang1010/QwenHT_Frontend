@@ -26,22 +26,35 @@ export interface SalesRecord {
   oil: boolean;
 }
 
+export interface SalesPaginatedResponse extends PaginatedResponse<SalesRecord> {
+  // Aggregates for the entire filtered dataset (not just the current page)
+  aggregatePrice?: number;
+  aggregateBodyMins?: number;
+  aggregateFootMins?: number;
+  aggregateStaffCommission?: number;
+  aggregateExtraCommission?: number;
+  aggregateRequest?: number;
+  aggregateFootCream?: number;
+  aggregateOil?: number;
+  totalRecordsCount?: number; // Same as totalCount but more explicit
+}
+
 @Injectable({
   providedIn: 'root'
 })
 export class SalesInquiryService {
   private apiUrl = environment.apiUrl;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   // Get sales records with pagination and filtering
   getSalesRecords(
     filters: { startDate?: any | null; endDate?: Date | null; outlet?: string | null },
-    offset: number = 0,
-    limit: number = 20
-  ): Observable<any> {  // Changed to any to handle the backend response structure
+    page: number = 1,
+    pageSize: number = 10
+  ): Observable<SalesPaginatedResponse> {
     // Construct query parameters based on filters
-    let params = `offset=${offset}&limit=${limit}`;
+    let params = `page=${page}&pageSize=${pageSize}`;
 
     if (filters.startDate) {
       const startDate = new Date(filters.startDate);
@@ -57,7 +70,7 @@ export class SalesInquiryService {
       params += `&outlet=${filters.outlet}`;
     }
 
-    return this.http.get(`${this.apiUrl}/sales/inquiry?${params}`);
+    return this.http.get<SalesPaginatedResponse>(`${this.apiUrl}/sales/inquiry?${params}`);
   }
 
   // Get available outlets for filtering
@@ -67,12 +80,12 @@ export class SalesInquiryService {
 
   // Update a sales record
   updateSalesRecord(record: SalesRecord): Observable<any> {
-    return this.http.put(`${this.apiUrl}/sales/${record.id}`, record);
+    return this.http.post(`${this.apiUrl}/sales/${record.id}`, record);
   }
 
   // Delete a sales record
   deleteSalesRecord(id: string): Observable<any> {
-    return this.http.delete(`${this.apiUrl}/sales/${id}`);
+    return this.http.post(`${this.apiUrl}/sales/${id}/delete`, {});
   }
 
   // Get a single sales record by ID
