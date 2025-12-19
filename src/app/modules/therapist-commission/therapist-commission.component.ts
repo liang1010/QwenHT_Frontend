@@ -94,9 +94,9 @@ export class TherapistCommissionComponent implements OnInit {
     // Get the data from the backend to generate the PDF
     this.therapistCommissionService.getTherapistCommission(staffId, startDate, endDate)
       .subscribe({
-        next: (data) => {
-          // Store the data for table display
-          this.commissionData = data;
+        next: (response) => {
+          // Store the data for table display - accessing the Commissions property from the full response
+          this.commissionData = response.commissions || [];
           this.displayTable = true;
 
           // Find the selected staff name

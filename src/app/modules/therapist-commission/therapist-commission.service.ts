@@ -17,14 +17,14 @@ export class TherapistCommissionService {
     staffId: string,
     startDate: Date,
     endDate: Date
-  ): Observable<TherapistCommissionItem[]> {
+  ): Observable<any> { // Using any temporarily until we define the full response type
     const params = new URLSearchParams({
       staffId: staffId,
       startDate: startDate.toISOString(),
       endDate: endDate.toISOString()
     });
 
-    return this.http.get<TherapistCommissionItem[]>(`${this.apiUrl}/commission/therapist?${params.toString()}`);
+    return this.http.get<any>(`${this.apiUrl}/commission/therapist?${params.toString()}`);
   }
 
   getStaff(): Observable<Staff[]> {

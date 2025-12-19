@@ -64,7 +64,7 @@
       <h4>Commission Data</h4>
       <p-table [value]="commissionData" [showCurrentPageReport]="true" [scrollable]="true">
         <ng-template pTemplate="header">
-          <tr>
+          <tr style="line-height: 0.1 !important;">
             <th>Sales Date</th>
             <th>Menu Code</th>
             <th>Foot Mins</th>
@@ -74,7 +74,7 @@
           </tr>
         </ng-template>
         <ng-template pTemplate="body" let-item>
-          <tr>
+          <tr style="line-height: 0.1 !important;">
             <td>{{ item.salesDate | date:'shortDate' }}</td>
             <td>{{ item.menuCode }}</td>
             <td>{{ item.footMins }}</td>
@@ -84,7 +84,7 @@
           </tr>
         </ng-template>
         <ng-template pTemplate="footer">
-          <tr>
+          <tr style="line-height: 0.1 !important;">
             <td colspan="2"><strong>TOTALS</strong></td>
             <td><strong>{{ calculateTotals('footMins') }}</strong></td>
             <td><strong>{{ calculateTotals('bodyMins') }}</strong></td>
