@@ -47,6 +47,10 @@
               (click)="generatePdf()" [disabled]="commissionForm.invalid || loading">
               <i *ngIf="loading" class="pi pi-spin pi-spinner" style="margin-left: 0.5rem;"></i>
             </button>
+
+            <button type="button" pButton pRipple label="Download PDF from Backend" icon="pi pi-download"
+              class="p-button-success" (click)="downloadPdfFromBackend()">
+            </button>
             <button type="button" pButton pRipple label="Clear" icon="pi pi-times" class="p-button-secondary"
               (click)="clearFilters()">
             </button>
@@ -55,18 +59,41 @@
       </form>
     </div>
 
-    <!-- PDF Viewer Section -->
-    <div class="pdf-section" *ngIf="pdfUrl">
-      <h4>Generated Report</h4>
-      <div class="pdf-container">
-        <ngx-extended-pdf-viewer
-          [src]="pdfUrl"
-          [textLayer]="true"
-          [page]="1"
-          use-browser-defaults="true"
-          style="height: 750px; width: 100%;">
-        </ngx-extended-pdf-viewer>
-      </div>
+    <!-- Data Table Section -->
+    <div class="table-section" *ngIf="displayTable">
+      <h4>Commission Data</h4>
+      <p-table [value]="commissionData" [showCurrentPageReport]="true" [scrollable]="true">
+        <ng-template pTemplate="header">
+          <tr>
+            <th>Sales Date</th>
+            <th>Menu Code</th>
+            <th>Foot Mins</th>
+            <th>Body Mins</th>
+            <th>Staff Commission</th>
+            <th>Extra Commission</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-item>
+          <tr>
+            <td>{{ item.salesDate | date:'shortDate' }}</td>
+            <td>{{ item.menuCode }}</td>
+            <td>{{ item.footMins }}</td>
+            <td>{{ item.bodyMins }}</td>
+            <td>{{ item.staffCommission | currency }}</td>
+            <td>{{ item.extraCommission | currency }}</td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="footer">
+          <tr>
+            <td colspan="2"><strong>TOTALS</strong></td>
+            <td><strong>{{ calculateTotals('footMins') }}</strong></td>
+            <td><strong>{{ calculateTotals('bodyMins') }}</strong></td>
+            <td><strong>{{ calculateTotals('staffCommission') | currency }}</strong></td>
+            <td><strong>{{ calculateTotals('extraCommission') | currency }}</strong></td>
+          </tr>
+        </ng-template>
+      </p-table>
     </div>
+
   </div>
 </div>

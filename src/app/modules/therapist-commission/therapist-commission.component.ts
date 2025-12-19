@@ -19,6 +19,8 @@ export class TherapistCommissionComponent implements OnInit {
   loading = false;
   pdfSrc: SafeUrl | null = null;
   pdfUrl: string | null = null;
+  commissionData: TherapistCommissionItem[] = [];
+  displayTable = false;
 
   constructor(
     private fb: FormBuilder,
@@ -93,12 +95,14 @@ export class TherapistCommissionComponent implements OnInit {
     this.therapistCommissionService.getTherapistCommission(staffId, startDate, endDate)
       .subscribe({
         next: (data) => {
+          // Store the data for table display
+          this.commissionData = data;
+          this.displayTable = true;
+
           // Find the selected staff name
           const selectedStaff = this.staffOptions.find(s => s.id === staffId);
           const staffName = selectedStaff ? (selectedStaff.nickName || selectedStaff.fullName || 'Unknown') : 'Unknown';
 
-          // Generate PDF client-side
-          this.generatePdfClientSide(data, staffName, startDate, endDate);
           this.loading = false;
         },
         error: (error) => {
@@ -107,6 +111,59 @@ export class TherapistCommissionComponent implements OnInit {
             severity: 'error',
             summary: 'Error',
             detail: 'Failed to fetch data for PDF',
+            life: 3000
+          });
+          this.loading = false;
+        }
+      });
+  }
+
+  // Method to download PDF from backend
+  downloadPdfFromBackend(): void {
+    if (this.commissionForm.invalid) {
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Validation Error',
+        detail: 'Please fill in all required fields',
+        life: 3000
+      });
+      return;
+    }
+
+    this.loading = true;
+    const formValue = this.commissionForm.value;
+
+    const staffId = formValue.staff;
+    const year = formValue.year;
+    const month = formValue.month;
+    const period = formValue.period;
+
+    // Calculate start and end dates based on the selected period
+    const startDate = this.calculatePeriodStartDate(year, month, period);
+    const endDate = this.calculatePeriodEndDate(year, month, period);
+
+    // Call backend endpoint to generate PDF
+    this.therapistCommissionService.downloadTherapistCommissionReport(staffId, startDate, endDate)
+      .subscribe({
+        next: (response: Blob) => {
+          // Create a download link for the PDF
+          const blob = new Blob([response], { type: 'application/pdf' });
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `therapist-commission-${staffId}-${year}-${month}-${period}.pdf`;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          window.URL.revokeObjectURL(url);
+          this.loading = false;
+        },
+        error: (error) => {
+          console.error('Error downloading therapist commission PDF:', error);
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Failed to download PDF from backend',
             life: 3000
           });
           this.loading = false;
@@ -219,5 +276,21 @@ export class TherapistCommissionComponent implements OnInit {
     }
     this.pdfSrc = null;
     this.pdfUrl = null;
+    this.commissionData = [];
+    this.displayTable = false;
+  }
+
+  calculateTotals(field: keyof TherapistCommissionItem): number {
+    if (!this.commissionData || this.commissionData.length === 0) {
+      return 0;
+    }
+
+    // For numeric fields, calculate the sum
+    if (field === 'footMins' || field === 'bodyMins' ||
+        field === 'staffCommission' || field === 'extraCommission') {
+      return this.commissionData.reduce((sum, item) => sum + Number(item[field]), 0);
+    }
+
+    return 0;
   }
 }

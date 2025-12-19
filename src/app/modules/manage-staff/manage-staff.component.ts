@@ -93,6 +93,9 @@ export class ManageStaffComponent implements OnInit, OnDestroy {
       type: [''],
       checkIn: [null],
       checkOut: [null],
+      isRate: [null],
+      isCommissionPercentage: [null],
+      isGuaranteeIncome: [null],
       footRatePerHour: [null, [Validators.min(0)]],
       bodyRatePerHour: [null, [Validators.min(0)]],
       commissionBasePercentage: [null, [Validators.min(0), Validators.max(100)]],
@@ -356,7 +359,10 @@ export class ManageStaffComponent implements OnInit, OnDestroy {
       bankName: staff.bankName || '',
       accountHolderName: staff.accountHolderName || '',
       accountNumber: staff.accountNumber || '',
-      status: staff.status || 1
+      status: staff.status || 1,
+      isRate: staff.isRate || false,
+      isCommissionPercentage: staff.isCommissionPercentage || false,
+      isGuaranteeIncome: staff.isGuaranteeIncome || false,
     });
 
     this.staffDialog = true;

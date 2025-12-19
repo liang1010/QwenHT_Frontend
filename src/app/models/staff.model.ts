@@ -28,6 +28,10 @@ export interface Staff {
   employments?: Employment[];
   compensations?: Compensation[];
   bankAccounts?: BankAccount[];
+
+  isRate?: boolean;
+  isCommissionPercentage?: boolean;
+  isGuaranteeIncome?: boolean;
 }
 
 export interface Employment {
@@ -46,6 +50,9 @@ export interface Compensation {
   bodyRatePerHour?: number;
   commissionBasePercentage?: number;
   guaranteeIncome?: number;
+  isRate?: boolean;
+  isCommissionPercentage?: boolean;
+  isGuaranteeIncome?: boolean;
 }
 
 export interface BankAccount {

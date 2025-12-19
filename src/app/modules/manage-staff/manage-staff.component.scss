@@ -1,1 +1,11 @@
 /* Add any custom styles for the manage staff component here */
+.checkbox-field {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.checkbox-field > label {
+
+  margin-bottom: 0rem;
+}

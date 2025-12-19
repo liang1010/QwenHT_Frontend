@@ -31,4 +31,20 @@ export class TherapistCommissionService {
     return this.http.get<Staff[]>(`${this.apiUrl}/commission/therapist/staff/active`);
   }
 
+  downloadTherapistCommissionReport(
+    staffId: string,
+    startDate: Date,
+    endDate: Date
+  ): Observable<Blob> {
+    const params = new URLSearchParams({
+      staffId: staffId,
+      startDate: startDate.toISOString(),
+      endDate: endDate.toISOString()
+    });
+
+    return this.http.get(`${this.apiUrl}/commission/therapist/pdf?${params.toString()}`, {
+      responseType: 'blob' // Important: Specify blob response type for PDF download
+    });
+  }
+
 }
