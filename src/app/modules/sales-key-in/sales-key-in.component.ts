@@ -1,14 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { SalesService, Staff, } from './sales.service';
+import { SalesService, Staff, } from './sales-key-in.service';
 import { OptionValue } from '../../models/option-value.model';
 import { Menu } from '../../models/menu.model';
 import { MessageService } from 'primeng/api';
 
 @Component({
-  selector: 'app-sales',
-  templateUrl: './sales.component.html',
-  styleUrls: ['./sales.component.scss']
+  selector: 'app-sales-key-in',
+  templateUrl: './sales-key-in.component.html',
+  styleUrls: ['./sales-key-in.component.scss']
 })
 export class SalesComponent implements OnInit {
   salesForm: FormGroup;

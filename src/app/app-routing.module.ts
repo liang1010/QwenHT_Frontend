@@ -29,21 +29,28 @@ import { LoggedInGuard } from './guards/logged-in.guard';
           {
             path: 'dashboard',
             loadChildren: () => import('./modules/dashboard/dashboard.module').then(m => m.DashboardModule)
+          }, {
+            path: 'commission',
+            children: [
+              {
+                path: 'therapist',
+                loadChildren: () => import('./modules/therapist-commission/therapist-commission.module').then(m => m.TherapistCommissionModule)
+              }]
           },
           {
             path: 'sales',
             children: [
               {
                 path: 'key-in',
-                loadChildren: () => import('./modules/sales/sales.module').then(m => m.SalesModule)
+                loadChildren: () => import('./modules/sales-key-in/sales-key-in.module').then(m => m.SalesModule)
               },
               {
                 path: 'inquiry',
-                loadChildren: () => import('./modules/inquiry-sales/inquiry-sales.module').then(m => m.InquirySalesModule)
+                loadChildren: () => import('./modules/sales-inquiry/sales-inquiry.module').then(m => m.SalesInquiryModule)
               },
               {
                 path: 'summary',
-                loadChildren: () => import('./modules/inquiry-sales/sales-summary/sales-summary.module').then(m => m.SalesSummaryModule)
+                loadChildren: () => import('./modules/sales-summary/sales-summary.module').then(m => m.SalesSummaryModule)
               }
             ]
           },

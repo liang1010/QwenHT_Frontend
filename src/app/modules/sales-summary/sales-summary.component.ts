@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { SalesSummaryService } from './sales-summary.service';
 import { SalesSummaryItem } from './sales-summary.model';
 import { MessageService } from 'primeng/api';
-import { OptionValue } from '../../../models/option-value.model';
+import { OptionValue } from '../../models/option-value.model';
 
 @Component({
   selector: 'app-sales-summary',

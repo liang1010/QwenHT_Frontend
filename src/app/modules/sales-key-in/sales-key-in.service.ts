@@ -28,20 +28,20 @@ export class SalesService {
 
   // Methods to fetch data from backend
   getStaff(): Observable<Staff[]> {
-    return this.http.get<Staff[]>(`${this.apiUrl}/sales/staff/active`);
+    return this.http.get<Staff[]>(`${this.apiUrl}/sales-key-in/staff/active`);
   }
 
   getMenu(): Observable<Menu[]> {
-    return this.http.get<Menu[]>(`${this.apiUrl}/sales/menu/active`);
+    return this.http.get<Menu[]>(`${this.apiUrl}/sales-key-in/menu/active`);
   }
 
   getOutlets(): Observable<OptionValue[]> {
 
-    return this.http.get<OptionValue[]>(`${this.apiUrl}/sales/outlet/active?category=${encodeURIComponent('OUTLET')}`);
+    return this.http.get<OptionValue[]>(`${this.apiUrl}/sales-key-in/outlet/active?category=${encodeURIComponent('OUTLET')}`);
   }
 
   // Method to save sales data
   saveSales(salesData: any): Observable<any> {
-    return this.http.post(`${this.apiUrl}/sales`, salesData);
+    return this.http.post(`${this.apiUrl}/sales-key-in`, salesData);
   }
 }

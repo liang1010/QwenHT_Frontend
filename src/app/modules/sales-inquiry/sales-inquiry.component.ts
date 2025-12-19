@@ -4,7 +4,7 @@ import { MessageService } from 'primeng/api';
 import { SalesInquiryService, SalesRecord } from './sales-inquiry.service';
 import { Subject, takeUntil } from 'rxjs';
 import { LazyLoadEvent } from 'primeng/api';
-import { OptionValue } from '../../../models/option-value.model';
+import { OptionValue } from '../../models/option-value.model';
 
 @Component({
   selector: 'app-sales-inquiry',

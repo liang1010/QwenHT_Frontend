@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { environment } from '../../../../environments/environment';
-import { PaginatedResponse } from '../../../models/paginated-response';
-import { OptionValue } from '../../../models/option-value.model';
+import { environment } from '../../../environments/environment';
+import { PaginatedResponse } from '../../models/paginated-response';
+import { OptionValue } from '../../models/option-value.model';
 
 // Define the SalesRecord interface
 export interface SalesRecord {
@@ -70,26 +70,26 @@ export class SalesInquiryService {
       params += `&outlet=${filters.outlet}`;
     }
 
-    return this.http.get<SalesPaginatedResponse>(`${this.apiUrl}/sales/inquiry?${params}`);
+    return this.http.get<SalesPaginatedResponse>(`${this.apiUrl}/sales-inquiry/inquiry?${params}`);
   }
 
   // Get available outlets for filtering
   getOutlets(): Observable<OptionValue[]> {
-    return this.http.get<OptionValue[]>(`${this.apiUrl}/sales/outlet/active?category=${encodeURIComponent('OUTLET')}`);
+    return this.http.get<OptionValue[]>(`${this.apiUrl}/sales-inquiry/outlet/active?category=${encodeURIComponent('OUTLET')}`);
   }
 
   // Update a sales record
   updateSalesRecord(record: SalesRecord): Observable<any> {
-    return this.http.post(`${this.apiUrl}/sales/${record.id}`, record);
+    return this.http.post(`${this.apiUrl}/sales-inquiry/${record.id}`, record);
   }
 
   // Delete a sales record
   deleteSalesRecord(id: string): Observable<any> {
-    return this.http.post(`${this.apiUrl}/sales/${id}/delete`, {});
+    return this.http.post(`${this.apiUrl}/sales-inquiry/${id}/delete`, {});
   }
 
   // Get a single sales record by ID
   getSalesRecordById(id: string): Observable<SalesRecord> {
-    return this.http.get<SalesRecord>(`${this.apiUrl}/sales/${id}`);
+    return this.http.get<SalesRecord>(`${this.apiUrl}/sales-inquiry/${id}`);
   }
 }

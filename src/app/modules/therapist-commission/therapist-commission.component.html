@@ -1,0 +1,72 @@
+<div class="therapist-commission-container">
+  <div class="card">
+    <h3>Therapist Commission PDF Report</h3>
+
+    <!-- Filter Section -->
+    <div class="filter-section">
+      <form [formGroup]="commissionForm" class="p-fluid">
+        <div class="form-row">
+          <div class="field">
+            <label for="staff">Staff</label>
+            <p-dropdown id="staff" formControlName="staff" [options]="staffOptions" optionLabel="nickName"
+              optionValue="id" placeholder="Select Staff">
+            </p-dropdown>
+            <small *ngIf="commissionForm.get('staff')?.invalid && commissionForm.get('staff')?.errors?.['required']"
+              class="p-error">Staff is required.</small>
+          </div>
+          <div class="field">
+            <label for="year">Year</label>
+            <p-dropdown id="year" formControlName="year" [options]="[2024, 2025, 2026, 2027, 2028, 2029, 2030]"
+              placeholder="Select Year">
+            </p-dropdown>
+            <small *ngIf="commissionForm.get('year')?.invalid && commissionForm.get('year')?.errors?.['required']"
+              class="p-error">Year is required.</small>
+          </div>
+          <div class="field">
+            <label for="month">Month</label>
+            <p-dropdown id="month" formControlName="month"
+              [options]="[{label: 'January', value: 1}, {label: 'February', value: 2}, {label: 'March', value: 3},
+                         {label: 'April', value: 4}, {label: 'May', value: 5}, {label: 'June', value: 6},
+                         {label: 'July', value: 7}, {label: 'August', value: 8}, {label: 'September', value: 9},
+                         {label: 'October', value: 10}, {label: 'November', value: 11}, {label: 'December', value: 12}]" optionLabel="label" optionValue="value"
+              placeholder="Select Month">
+            </p-dropdown>
+            <small *ngIf="commissionForm.get('month')?.invalid && commissionForm.get('month')?.errors?.['required']"
+              class="p-error">Month is required.</small>
+          </div>
+          <div class="field">
+            <label for="period">Period</label>
+            <p-dropdown id="period" formControlName="period" [options]="periodOptions" optionLabel="label"
+              optionValue="value" placeholder="Select Period">
+            </p-dropdown>
+            <small *ngIf="commissionForm.get('period')?.invalid && commissionForm.get('period')?.errors?.['required']"
+              class="p-error">Period is required.</small>
+          </div>
+          <div class="field-buttons">
+            <button type="button" pButton pRipple label="Generate PDF" icon="pi pi-file-pdf" class="p-button-primary"
+              (click)="generatePdf()" [disabled]="commissionForm.invalid || loading">
+              <i *ngIf="loading" class="pi pi-spin pi-spinner" style="margin-left: 0.5rem;"></i>
+            </button>
+            <button type="button" pButton pRipple label="Clear" icon="pi pi-times" class="p-button-secondary"
+              (click)="clearFilters()">
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <!-- PDF Viewer Section -->
+    <div class="pdf-section" *ngIf="pdfUrl">
+      <h4>Generated Report</h4>
+      <div class="pdf-container">
+        <ngx-extended-pdf-viewer
+          [src]="pdfUrl"
+          [textLayer]="true"
+          [page]="1"
+          use-browser-defaults="true"
+          style="height: 750px; width: 100%;">
+        </ngx-extended-pdf-viewer>
+      </div>
+    </div>
+  </div>
+</div>

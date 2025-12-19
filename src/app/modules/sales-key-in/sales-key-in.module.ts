@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { SalesRoutingModule } from './sales-routing.module';
-import { SalesComponent } from './sales.component';
+import { SalesRoutingModule } from './sales-key-in-routing.module';
+import { SalesComponent } from './sales-key-in.component';
 import { PrimeNgModule } from '../primeng.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
