@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { TherapistCommissionItem } from './therapist-commission.model';
+import { TherapistCommissionItem, TherapistCommissionReportDto } from './therapist-commission.model';
 import { environment } from '../../../environments/environment';
 import { Staff } from '../../models/staff.model';
 
@@ -24,7 +24,7 @@ export class TherapistCommissionService {
       endDate: endDate.toISOString()
     });
 
-    return this.http.get<any>(`${this.apiUrl}/commission/therapist?${params.toString()}`);
+    return this.http.get<TherapistCommissionReportDto>(`${this.apiUrl}/commission/therapist?${params.toString()}`);
   }
 
   getStaff(): Observable<Staff[]> {

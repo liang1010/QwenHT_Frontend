@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { TherapistCommissionService } from './therapist-commission.service';
-import { TherapistCommissionItem } from './therapist-commission.model';
+import { TherapistCommissionItem, TherapistCommissionReportDto, TherapistIncentiveDto } from './therapist-commission.model';
 import { MessageService } from 'primeng/api';
 import { Staff } from '../../models/staff.model';
 import jsPDF from 'jspdf';
@@ -20,6 +20,7 @@ export class TherapistCommissionComponent implements OnInit {
   pdfSrc: SafeUrl | null = null;
   pdfUrl: string | null = null;
   commissionData: TherapistCommissionItem[] = [];
+  incentiveData: TherapistIncentiveDto[] = [];
   displayTable = false;
 
   constructor(
@@ -68,6 +69,8 @@ export class TherapistCommissionComponent implements OnInit {
     });
   }
 
+  therapistCommissionReport: TherapistCommissionReportDto | undefined;
+
   generatePdf(): void {
     if (this.commissionForm.invalid) {
       this.messageService.add({
@@ -95,8 +98,10 @@ export class TherapistCommissionComponent implements OnInit {
     this.therapistCommissionService.getTherapistCommission(staffId, startDate, endDate)
       .subscribe({
         next: (response) => {
+          this.therapistCommissionReport = response;
           // Store the data for table display - accessing the Commissions property from the full response
           this.commissionData = response.commissions || [];
+          this.incentiveData = response.incentives || [];
           this.displayTable = true;
 
           // Find the selected staff name
@@ -287,7 +292,7 @@ export class TherapistCommissionComponent implements OnInit {
 
     // For numeric fields, calculate the sum
     if (field === 'footMins' || field === 'bodyMins' ||
-        field === 'staffCommission' || field === 'extraCommission') {
+      field === 'staffCommission' || field === 'extraCommission') {
       return this.commissionData.reduce((sum, item) => sum + Number(item[field]), 0);
     }
 

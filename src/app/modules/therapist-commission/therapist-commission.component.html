@@ -7,11 +7,11 @@
       <form [formGroup]="commissionForm" class="p-fluid">
         <div class="form-row">
           <div class="field">
-            <label for="staff">Staff</label>
+            <label for="staff">Staff *</label>
             <p-dropdown id="staff" formControlName="staff" [options]="staffOptions" optionLabel="nickName"
               optionValue="id" placeholder="Select Staff">
             </p-dropdown>
-            <small *ngIf="commissionForm.get('staff')?.invalid && commissionForm.get('staff')?.errors?.['required']"
+            <small *ngIf="commissionForm.get('staff')?.touched &&commissionForm.get('staff')?.invalid && commissionForm.get('staff')?.errors?.['required']"
               class="p-error">Staff is required.</small>
           </div>
           <div class="field">
@@ -35,24 +35,21 @@
               class="p-error">Month is required.</small>
           </div>
           <div class="field">
-            <label for="period">Period</label>
+            <label for="period">Period *</label>
             <p-dropdown id="period" formControlName="period" [options]="periodOptions" optionLabel="label"
               optionValue="value" placeholder="Select Period">
             </p-dropdown>
-            <small *ngIf="commissionForm.get('period')?.invalid && commissionForm.get('period')?.errors?.['required']"
+            <small *ngIf="commissionForm.get('period')?.touched && commissionForm.get('period')?.invalid && commissionForm.get('period')?.errors?.['required']"
               class="p-error">Period is required.</small>
           </div>
           <div class="field-buttons">
-            <button type="button" pButton pRipple label="Generate PDF" icon="pi pi-file-pdf" class="p-button-primary"
+            <button type="button" pButton pRipple label="Search" icon="pi pi-file-pdf" class="p-button-primary"
               (click)="generatePdf()" [disabled]="commissionForm.invalid || loading">
               <i *ngIf="loading" class="pi pi-spin pi-spinner" style="margin-left: 0.5rem;"></i>
             </button>
 
-            <button type="button" pButton pRipple label="Download PDF from Backend" icon="pi pi-download"
+            <button type="button" pButton pRipple label="PDF" icon="pi pi-download"
               class="p-button-success" (click)="downloadPdfFromBackend()">
-            </button>
-            <button type="button" pButton pRipple label="Clear" icon="pi pi-times" class="p-button-secondary"
-              (click)="clearFilters()">
             </button>
           </div>
         </div>
@@ -65,34 +62,172 @@
       <p-table [value]="commissionData" [showCurrentPageReport]="true" [scrollable]="true">
         <ng-template pTemplate="header">
           <tr style="line-height: 0.1 !important;">
-            <th>Sales Date</th>
-            <th>Menu Code</th>
-            <th>Foot Mins</th>
-            <th>Body Mins</th>
-            <th>Staff Commission</th>
-            <th>Extra Commission</th>
+            <th style="width: 10%;">Sales Date</th>
+            <th style="width: 10%;">Menu Code</th>
+            <th style="width: 10%;text-align: right;">Foot Mins</th>
+            <th style="width: 10%;text-align: right;">Body Mins</th>
+            <th style="width: 10%;text-align: right;">Staff Commission</th>
+            <th style="width: 10%;text-align: right;">Extra Commission</th>
+            <th *ngIf="therapistCommissionReport?.isCommissionPercentage" style="width: 10%;text-align: right;">Price
+            </th>
           </tr>
         </ng-template>
-        <ng-template pTemplate="body" let-item>
+        <ng-template pTemplate="body" let-item let-rowIndex="rowIndex">
+          <tr *ngIf="rowIndex > 0 && commissionData[rowIndex - 1].salesDate   !== item.salesDate "
+            style="line-height: 0.1 !important;">
+            <td [colSpan]="therapistCommissionReport?.isCommissionPercentage ? 7 : 6"></td>
+          </tr>
+
           <tr style="line-height: 0.1 !important;">
             <td>{{ item.salesDate | date:'shortDate' }}</td>
             <td>{{ item.menuCode }}</td>
-            <td>{{ item.footMins }}</td>
-            <td>{{ item.bodyMins }}</td>
-            <td>{{ item.staffCommission | currency }}</td>
-            <td>{{ item.extraCommission | currency }}</td>
+            <td style="width: 10%;text-align: right;">{{ item.footMins == 0 ? '': item.footMins }}</td>
+            <td style="width: 10%;text-align: right;">{{ item.bodyMins == 0 ? '': item.bodyMins }}</td>
+            <td class="currency-cell">{{ item.staffCommission == 0 ? '': item.staffCommission | localCurrency }}</td>
+            <td class="currency-cell">{{ item.extraCommission == 0 ? '': item.extraCommission | localCurrency }}</td>
+            <td class="currency-cell" *ngIf="therapistCommissionReport?.isCommissionPercentage">{{ item.price == 0 ? '':
+              item.price | localCurrency }}</td>
+
           </tr>
         </ng-template>
         <ng-template pTemplate="footer">
           <tr style="line-height: 0.1 !important;">
-            <td colspan="2"><strong>TOTALS</strong></td>
-            <td><strong>{{ calculateTotals('footMins') }}</strong></td>
-            <td><strong>{{ calculateTotals('bodyMins') }}</strong></td>
-            <td><strong>{{ calculateTotals('staffCommission') | currency }}</strong></td>
-            <td><strong>{{ calculateTotals('extraCommission') | currency }}</strong></td>
+            <td><strong>TOTALS</strong></td>
+            <td *ngIf="therapistCommissionReport?.isRate">
+              <strong>{{therapistCommissionReport?.rateBase?.selectedPeriodHrs}}Hrs</strong>
+            </td>
+            <td *ngIf="therapistCommissionReport?.isRate" class="currency-cell">
+              <strong>{{therapistCommissionReport?.rateBase?.totalFootCommission | localCurrency}} </strong>
+            </td>
+            <td *ngIf="therapistCommissionReport?.isRate" class="currency-cell">
+              <strong>{{therapistCommissionReport?.rateBase?.totalBodyCommission | localCurrency}} </strong>
+            </td>
+            <td *ngIf="therapistCommissionReport?.isRate" class="currency-cell">
+              <strong>{{therapistCommissionReport?.rateBase?.totalStaffCommission | localCurrency}} </strong>
+            </td>
+            <td *ngIf="therapistCommissionReport?.isRate" class="currency-cell">
+              <strong>{{therapistCommissionReport?.rateBase?.totalExtraCommission | localCurrency}} </strong>
+            </td>
+
+
+            <td *ngIf="therapistCommissionReport?.isCommissionPercentage">
+              <strong>{{therapistCommissionReport?.commissionPercentage?.selectedPeriodHrs}}Hrs</strong>
+            </td>
+            <td *ngIf="therapistCommissionReport?.isCommissionPercentage" class="currency-cell">
+            </td>
+            <td *ngIf="therapistCommissionReport?.isCommissionPercentage" class="currency-cell">
+            </td>
+            <td *ngIf="therapistCommissionReport?.isCommissionPercentage" class="currency-cell">
+              <strong>{{therapistCommissionReport?.commissionPercentage?.totalStaffCommission | localCurrency}}
+              </strong>
+            </td>
+            <td *ngIf="therapistCommissionReport?.isCommissionPercentage" class="currency-cell">
+              <strong>{{therapistCommissionReport?.commissionPercentage?.totalExtraCommission | localCurrency}}
+              </strong>
+            </td>
+            <td *ngIf="therapistCommissionReport?.isCommissionPercentage" class="currency-cell">
+              <strong>{{therapistCommissionReport?.commissionPercentage?.totalPrice | localCurrency}} </strong>
+            </td>
+          </tr>
+
+          <tr style="line-height: 0.1 !important;" *ngIf="therapistCommissionReport?.isRate">
+            <td style="width: 10%;"> </td>
+            <td style="width: 10%;">
+              <strong>{{therapistCommissionReport?.rateBase?.allPeriodHrs == 0
+                ? therapistCommissionReport?.rateBase?.selectedPeriodHrs :
+                therapistCommissionReport?.rateBase?.allPeriodHrs}}Hrs </strong>
+            </td>
+            <td style="width: 10%;"> </td>
+            <td style="width: 10%;"> </td>
+            <td style="width: 10%; text-align: right;">
+              <strong>Total Commission : </strong>
+            </td>
+            <td style="width: 10%;" class="currency-cell">
+              <strong>{{therapistCommissionReport?.rateBase?.totalCommission | localCurrency}} </strong>
+            </td>
+          </tr>
+
+
+          <tr style="line-height: 0.1 !important;" *ngIf="therapistCommissionReport?.isCommissionPercentage">
+            <td style="width: 10%;"> </td>
+            <td style="width: 10%;">
+              <strong>{{therapistCommissionReport?.commissionPercentage?.allPeriodHrs == 0
+                ? therapistCommissionReport?.commissionPercentage?.selectedPeriodHrs :
+                therapistCommissionReport?.commissionPercentage?.allPeriodHrs}}Hrs </strong>
+            </td>
+            <td style="width: 10%;"> </td>
+            <td style="width: 10%;"></td>
+            <td style="width: 10%; text-align: right;"><strong>Total Sales :
+                {{therapistCommissionReport?.commissionPercentage?.percentage}}%</strong> </td>
+            <td style="width: 10%; text-align: right;">
+              <strong>Total Commission : </strong>
+            </td>
+            <td style="width: 10%;" class="currency-cell">
+              <strong>{{therapistCommissionReport?.commissionPercentage?.totalCommission | localCurrency}} </strong>
+            </td>
           </tr>
         </ng-template>
       </p-table>
+
+      <p-table [value]="incentiveData" [showCurrentPageReport]="true" [scrollable]="true">
+        <ng-template pTemplate="header">
+          <tr style="line-height: 0.1 !important;">
+
+            <th style="width: 10%;">Incentive Date</th>
+            <th style="width: 10%;">Description</th>
+            <th style="width: 10%;"> </th>
+            <th style="width: 10%;">Remark</th>
+            <th style="width: 10%;text-align: right;"></th>
+            <th style="width: 10%;text-align: right;" *ngIf="therapistCommissionReport?.isCommissionPercentage"></th>
+            <th style="width: 10%;text-align: right;">Amount</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-item let-rowIndex="rowIndex">
+          <tr *ngIf="rowIndex > 0 && commissionData[rowIndex - 1].salesDate   !== item.salesDate "
+            style="line-height: 0.1 !important;">
+            <td colspan="6"></td>
+          </tr>
+
+          <tr style="line-height: 0.1 !important;">
+            <td style="width: 10%;">{{ item.incentiveDate | date:'shortDate' }}</td>
+            <td style="width: 10%;">{{ item.description }}</td>
+            <td style="width: 10%;"> </td>
+            <td style="width: 10%;">{{ item.remark }}</td>
+            <td style="width: 10%;text-align: right;"></td>
+            <td style="width: 10%;text-align: right;" *ngIf="therapistCommissionReport?.isCommissionPercentage"></td>
+            <td style="width: 10%;text-align: right;" class="currency-cell">{{ item.amount == 0 ? '': item.amount |
+              localCurrency }}</td>
+
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="footer">
+          <tr style="line-height: 0.1 !important;">
+
+            <td [colSpan]="therapistCommissionReport?.isCommissionPercentage ? 6 : 5"
+              style="width: 47%; text-align: right;"><strong>Total Incentive : </strong></td>
+            <td class="currency-cell">
+              <strong>{{therapistCommissionReport?.totalIncentive | localCurrency}} </strong>
+            </td>
+          </tr>
+          <tr style="line-height: 0.1 !important;">
+
+            <td [colSpan]="therapistCommissionReport?.isCommissionPercentage ? 6 : 5"
+              style="width: 47%; text-align: right;"><strong>Total Payout : </strong></td>
+            <td class="currency-cell">
+              <strong>{{therapistCommissionReport?.totalPayout | localCurrency}} </strong>
+            </td>
+          </tr>
+        </ng-template>
+
+
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td colspan="6">No incentive data found.</td>
+          </tr>
+        </ng-template>
+      </p-table>
+
+
     </div>
 
   </div>

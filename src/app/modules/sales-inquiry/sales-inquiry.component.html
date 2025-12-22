@@ -74,9 +74,9 @@
             <td style="width: 10%">{{ record.menuDescription }}</td>
             <td style="width: 7%; text-align: center;">{{ record.bodyMins }}</td>
             <td style="width: 7%; text-align: center;">{{ record.footMins }}</td>
-            <td style="width: 9%; text-align: right;">{{ record.staffCommission | localCurrency }}</td>
-            <td style="width: 9%; text-align: right;">{{ record.extraCommission | localCurrency }}</td>
-            <td style="width: 8%; text-align: right;">{{ record.price | localCurrency }}</td>
+            <td style="width: 9%; text-align: right;" class="currency-cell">{{ record.staffCommission | localCurrency }}</td>
+            <td style="width: 9%; text-align: right;" class="currency-cell">{{ record.extraCommission | localCurrency }}</td>
+            <td style="width: 8%; text-align: right;" class="currency-cell">{{ record.price | localCurrency }}</td>
             <td style="width: 3%; text-align: center;">
               <p-checkbox [(ngModel)]="record.request" [binary]="true"></p-checkbox>
             </td>
@@ -103,9 +103,9 @@
             <td style="width: 10%; text-align: right;"><strong>{{ totalRecords }}</strong></td>
             <td style="width: 7%; text-align: center;"><strong>{{ totalBodyMins }}</strong></td>
             <td style="width: 7%; text-align: center;"><strong>{{ totalFootMins }}</strong></td>
-            <td style="width: 9%; text-align: right;"><strong>{{ totalExtraCommission | localCurrency }}</strong></td>
-            <td style="width: 9%; text-align: right;"><strong>{{ totalStaffCommission | localCurrency }}</strong></td>
-            <td style="width: 8%; text-align: right;"><strong>{{ totalPrice | localCurrency }}</strong></td>
+            <td style="width: 9%; text-align: right;" class="currency-cell"><strong>{{ totalExtraCommission | localCurrency }}</strong></td>
+            <td style="width: 9%; text-align: right;" class="currency-cell"><strong>{{ totalStaffCommission | localCurrency }}</strong></td>
+            <td style="width: 8%; text-align: right;" class="currency-cell"><strong>{{ totalPrice | localCurrency }}</strong></td>
             <td style="width: 3%; text-align: center;"><strong>{{ totalRequest }}</strong></td>
             <td style="width: 3%; text-align: center;"><strong>{{ totalFootCream }}</strong></td>
             <td style="width: 3%; text-align: center;"><strong>{{ totalOil }}</strong></td>

@@ -61,9 +61,9 @@
           <tr>
             <td style="width: 15%">{{ item.code }}</td>
             <td style="width: 35%">{{ item.description }}</td>
-            <td style="width: 15%; text-align: right;">{{ item.price | localCurrency }}</td>
+            <td style="width: 15%; text-align: right;" class="currency-cell">{{ item.price | localCurrency }}</td>
             <td style="width: 15%; text-align: right;">{{ item.saleCount }}</td>
-            <td style="width: 20%; text-align: right;">{{ item.totalSales | localCurrency }}</td>
+            <td style="width: 20%; text-align: right;" class="currency-cell">{{ item.totalSales | localCurrency }}</td>
           </tr>
         </ng-template>
 
@@ -71,9 +71,9 @@
           <tr>
             <td style="width: 15%"></td>
             <td style="width: 35%; text-align: right;"><strong>Totals:</strong></td>
-            <td style="width: 15%; text-align: right;"><strong>{{ totalSalePrice| localCurrency}}</strong></td>
+            <td style="width: 15%; text-align: right;" class="currency-cell"><strong>{{ totalSalePrice| localCurrency}}</strong></td>
             <td style="width: 15%; text-align: right;"><strong>{{ totalSaleCount }}</strong></td>
-            <td style="width: 20%; text-align: right;"><strong>{{ totalSalesAmount | localCurrency }}</strong></td>
+            <td style="width: 20%; text-align: right;" class="currency-cell"><strong>{{ totalSalesAmount | localCurrency }}</strong></td>
           </tr>
         </ng-template>
 
