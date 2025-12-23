@@ -4,9 +4,8 @@ import { TherapistCommissionService } from './therapist-commission.service';
 import { TherapistCommissionItem, TherapistCommissionReportDto, TherapistIncentiveDto } from './therapist-commission.model';
 import { MessageService } from 'primeng/api';
 import { Staff } from '../../models/staff.model';
-import jsPDF from 'jspdf';
-import autoTable from 'jspdf-autotable';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
+import { Incentive } from '../../models/incentives';
 
 @Component({
   selector: 'app-therapist-commission',
@@ -41,6 +40,12 @@ export class TherapistCommissionComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadStaff();
+    this.commissionForm.valueChanges.subscribe(x => {
+      this.commissionData = [];
+      this.incentiveData = [];
+      this.therapistCommissionReport = undefined;
+      this.displayTable = false;
+    })
   }
 
   private createForm(): FormGroup {
@@ -48,7 +53,8 @@ export class TherapistCommissionComponent implements OnInit {
       staff: [null, Validators.required],
       year: [new Date().getFullYear(), Validators.required],
       month: [new Date().getMonth() + 1, Validators.required], // Current month
-      period: [null, Validators.required]
+      period: [null, Validators.required],
+      incentive: [false]
     });
   }
 
@@ -89,13 +95,14 @@ export class TherapistCommissionComponent implements OnInit {
     const year = formValue.year;
     const month = formValue.month;
     const period = formValue.period;
+    const incentive = formValue.incentive;
 
     // Calculate start and end dates based on the selected period
     const startDate = this.calculatePeriodStartDate(year, month, period);
     const endDate = this.calculatePeriodEndDate(year, month, period);
 
     // Get the data from the backend to generate the PDF
-    this.therapistCommissionService.getTherapistCommission(staffId, startDate, endDate)
+    this.therapistCommissionService.getTherapistCommission(staffId, startDate, endDate,incentive)
       .subscribe({
         next: (response) => {
           this.therapistCommissionReport = response;
@@ -176,80 +183,6 @@ export class TherapistCommissionComponent implements OnInit {
       });
   }
 
-  private generatePdfClientSide(data: TherapistCommissionItem[], staffName: string, startDate: Date, endDate: Date): void {
-    // Create a new jsPDF instance
-    const doc = new jsPDF('p', 'mm', 'a4'); // landscape orientation, millimeters, A4 size
-    const pageWidth = doc.internal.pageSize.getWidth();
-
-    // Add title
-    doc.setFontSize(16);
-    doc.text(`Therapist Commission Report - ${staffName}`, pageWidth / 2, 15, { align: 'center' });
-
-    // Add date range
-    doc.setFontSize(12);
-    doc.text(`Period: ${startDate.toLocaleDateString()} - ${endDate.toLocaleDateString()}`, pageWidth / 2, 25, { align: 'center' });
-
-    // Add report date
-    doc.text(`Generated on: ${new Date().toLocaleDateString()}`, pageWidth / 2, 35, { align: 'center' });
-
-    // Check if there's data to display
-    if (data && data.length > 0) {
-      // Prepare data for table
-      const tableData = data.map(item => [
-        new Date(item.salesDate).toLocaleDateString(),
-        item.menuCode,
-        item.footMins.toString(),
-        item.bodyMins.toString(),
-        item.staffCommission.toFixed(2),
-        item.extraCommission.toFixed(2)
-      ]);
-
-      // Calculate totals
-      const totalFootMins = data.reduce((sum, item) => sum + item.footMins, 0);
-      const totalBodyMins = data.reduce((sum, item) => sum + item.bodyMins, 0);
-      const totalStaffCommission = data.reduce((sum, item) => sum + item.staffCommission, 0);
-      const totalExtraCommission = data.reduce((sum, item) => sum + item.extraCommission, 0);
-
-      // Add totals row to data
-      tableData.push([
-        'TOTALS', '',
-        totalFootMins.toString(),
-        totalBodyMins.toString(),
-        totalStaffCommission.toFixed(2),
-        totalExtraCommission.toFixed(2)
-      ]);
-
-      // Add table
-      autoTable(doc, {
-        startY: 45,
-        head: [['Sales Date', 'Menu Code', 'Foot Mins', 'Body Mins', 'Staff Commission', 'Extra Commission']],
-        body: tableData,
-        styles: {
-          fontSize: 8,
-          cellPadding: 1
-        },
-        headStyles: {
-          fillColor: [66, 133, 244], // Google blue color
-          textColor: [255, 255, 255]
-        },
-        alternateRowStyles: {
-          fillColor: [245, 245, 245] // Light gray for alternate rows
-        },
-        margin: { left: 5, right: 5 }
-      });
-    } else {
-      // If no data, add a message
-      doc.setFontSize(12);
-      doc.text('No data available for the selected period.', pageWidth / 2, 50, { align: 'center' });
-    }
-
-    // Save the PDF and create a blob URL for display
-    const pdfBlob = doc.output('blob');
-    const blobUrl = URL.createObjectURL(pdfBlob);
-    this.pdfSrc = this.sanitizer.bypassSecurityTrustResourceUrl(blobUrl);
-    this.pdfUrl = blobUrl;
-  }
-
   private calculatePeriodStartDate(year: number, month: number, period: number): Date {
     if (period === 1) {
       // 1st period: 1st of the month
@@ -297,5 +230,143 @@ export class TherapistCommissionComponent implements OnInit {
     }
 
     return 0;
+  }
+
+  incentiveDialog = false;
+  incentive: Incentive = {};
+  submitted = false;
+  newIncentive() {
+    this.incentive = {
+      status: 1, // Defau
+    };
+    this.submitted = false;
+    this.incentiveDialog = true;
+  }
+
+
+  editIncentive(menu: Incentive) {
+    this.incentive = { ...menu };
+    // Convert UTC dates to local timezone for the calendar components
+    if (this.incentive.createdAt) {
+      this.incentive.createdAt = new Date(this.incentive.createdAt);
+    }
+    if (this.incentive.lastUpdated) {
+      this.incentive.lastUpdated = new Date(this.incentive.lastUpdated);
+    }
+    this.incentiveDialog = true;
+  }
+
+
+  deleteMenu(menu: Incentive) {
+    this.incentive = { ...menu };
+    // this.deleteMenuDialog = false;
+
+    if (this.incentive.id) {
+      this.therapistCommissionService.deleteIncentive(this.incentive.id).subscribe({
+        next: () => {
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Successful',
+            detail: 'Incentive Deleted',
+            life: 3000
+          });
+          this.generatePdf(); // Reload the data
+          this.incentive = {};
+          this.incentiveDialog = false;
+        },
+        error: (error) => {
+          this.incentiveDialog = false;
+          console.error('Error deleting menu:', error);
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Failed to delete incentive',
+            life: 3000
+          });
+        }
+      });
+    }
+  }
+
+  hideDialog() {
+    this.incentiveDialog = false;
+    this.submitted = false;
+  }
+
+  savIncentive() {
+
+    const formValue = this.commissionForm.value;
+    const year = formValue.year;
+    const month = formValue.month;
+    const period = formValue.period;
+
+    // Calculate start and end dates based on the selected period
+    const startDate = this.calculatePeriodStartDate(year, month, period);
+    const endDate = this.calculatePeriodEndDate(year, month, period);
+    const staffId = formValue.staff;
+    this.submitted = true;
+
+    this.incentive.incentiveDate = endDate;
+    this.incentive.staffId = staffId;
+    // Validate required fields
+    if (this.incentive.description?.trim() && this.incentive.remark?.trim() && this.incentive.amount !== undefined) {
+      if (this.incentive.id) {
+        // Update existing menu
+        this.therapistCommissionService.updateIncentive(this.incentive.id, this.incentive).subscribe({
+          next: (updatedMenu) => {
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Successful',
+              detail: 'Incentive Updated',
+              life: 3000
+            });
+            this.generatePdf(); // Reload the data
+            this.incentiveDialog = false;
+            this.incentive = {};
+          },
+          error: (error) => {
+            console.error('Error updating Incentive:', error);
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Error',
+              detail: 'Failed to update incentive',
+              life: 3000
+            });
+          }
+        });
+      } else {
+        // Create new menu
+        this.therapistCommissionService.createIncentive(this.incentive).subscribe({
+          next: (newMenu) => {
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Successful',
+              detail: 'Incentive Created',
+              life: 3000
+            });
+            this.generatePdf(); // Reload the data
+            this.incentiveDialog = false;
+            this.incentive = {};
+          },
+          error: (error) => {
+            console.error('Error creating incentive:', error);
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Error',
+              detail: 'Failed to create incentive',
+              life: 3000
+            });
+          }
+        });
+      }
+    } else {
+      // Show validation error
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'Code, Description, Category, and Price are required fields',
+        life: 3000
+      });
+    }
   }
 }

@@ -1,5 +1,6 @@
 <div class="therapist-commission-container">
   <div class="card">
+    <p-toast></p-toast>
     <h3>Therapist Commission PDF Report</h3>
 
     <!-- Filter Section -->
@@ -11,7 +12,8 @@
             <p-dropdown id="staff" formControlName="staff" [options]="staffOptions" optionLabel="nickName"
               optionValue="id" placeholder="Select Staff">
             </p-dropdown>
-            <small *ngIf="commissionForm.get('staff')?.touched &&commissionForm.get('staff')?.invalid && commissionForm.get('staff')?.errors?.['required']"
+            <small
+              *ngIf="commissionForm.get('staff')?.touched &&commissionForm.get('staff')?.invalid && commissionForm.get('staff')?.errors?.['required']"
               class="p-error">Staff is required.</small>
           </div>
           <div class="field">
@@ -39,8 +41,14 @@
             <p-dropdown id="period" formControlName="period" [options]="periodOptions" optionLabel="label"
               optionValue="value" placeholder="Select Period">
             </p-dropdown>
-            <small *ngIf="commissionForm.get('period')?.touched && commissionForm.get('period')?.invalid && commissionForm.get('period')?.errors?.['required']"
+            <small
+              *ngIf="commissionForm.get('period')?.touched && commissionForm.get('period')?.invalid && commissionForm.get('period')?.errors?.['required']"
               class="p-error">Period is required.</small>
+          </div>
+          <div class="field-checkbox">
+            <p-checkbox id="incentive" formControlName="incentive" [binary]="true">
+            </p-checkbox>
+            <label for="incentive">Incentive</label>
           </div>
           <div class="field-buttons">
             <button type="button" pButton pRipple label="Search" icon="pi pi-file-pdf" class="p-button-primary"
@@ -48,8 +56,8 @@
               <i *ngIf="loading" class="pi pi-spin pi-spinner" style="margin-left: 0.5rem;"></i>
             </button>
 
-            <button type="button" pButton pRipple label="PDF" icon="pi pi-download"
-              class="p-button-success" (click)="downloadPdfFromBackend()">
+            <button type="button" pButton pRipple label="PDF" icon="pi pi-download" class="p-button-success"
+              (click)="downloadPdfFromBackend()">
             </button>
           </div>
         </div>
@@ -169,31 +177,27 @@
         </ng-template>
       </p-table>
 
-      <p-table [value]="incentiveData" [showCurrentPageReport]="true" [scrollable]="true">
+      <div class="my-2 left">
+        <button pButton pRipple label="New" icon="pi pi-plus" class="p-button-success mr-2"
+          (click)="newIncentive()"></button>
+      </div>
+      <p-table [value]="incentiveData" [showCurrentPageReport]="true" [scrollable]="true" [rowSelectable]="true">
         <ng-template pTemplate="header">
           <tr style="line-height: 0.1 !important;">
 
             <th style="width: 10%;">Incentive Date</th>
-            <th style="width: 10%;">Description</th>
-            <th style="width: 10%;"> </th>
-            <th style="width: 10%;">Remark</th>
-            <th style="width: 10%;text-align: right;"></th>
+            <th style="width: 10%;" colspan="2">Description</th>
+            <th style="width: 10%;" colspan="2">Remark</th>
             <th style="width: 10%;text-align: right;" *ngIf="therapistCommissionReport?.isCommissionPercentage"></th>
             <th style="width: 10%;text-align: right;">Amount</th>
           </tr>
         </ng-template>
         <ng-template pTemplate="body" let-item let-rowIndex="rowIndex">
-          <tr *ngIf="rowIndex > 0 && commissionData[rowIndex - 1].salesDate   !== item.salesDate "
-            style="line-height: 0.1 !important;">
-            <td colspan="6"></td>
-          </tr>
 
-          <tr style="line-height: 0.1 !important;">
+          <tr style="line-height: 0.1 !important;" (dblclick)="editIncentive(item)">
             <td style="width: 10%;">{{ item.incentiveDate | date:'shortDate' }}</td>
-            <td style="width: 10%;">{{ item.description }}</td>
-            <td style="width: 10%;"> </td>
-            <td style="width: 10%;">{{ item.remark }}</td>
-            <td style="width: 10%;text-align: right;"></td>
+            <td style="width: 10%;"colspan="2">{{ item.description }}</td>
+            <td style="width: 10%;"colspan="2">{{ item.remark }}</td>
             <td style="width: 10%;text-align: right;" *ngIf="therapistCommissionReport?.isCommissionPercentage"></td>
             <td style="width: 10%;text-align: right;" class="currency-cell">{{ item.amount == 0 ? '': item.amount |
               localCurrency }}</td>
@@ -229,6 +233,44 @@
 
 
     </div>
+    <p-dialog [(visible)]="incentiveDialog" [style]="{width: '500px', 'max-height': '600px', 'overflow': 'auto' }"
+      header="Menu Details" [modal]="true" class="p-fluid">
+      <ng-template pTemplate="content">
+        <div class="p-4">
+          <div class="field">
+            <label for="code">Code *</label>
+            <input type="text" pInputText id="code" [(ngModel)]="incentive.incentiveDate" required
+              [ngClass]="{'ng-invalid ng-dirty': submitted && !incentive.incentiveDate}" />
+            <small class="ng-dirty ng-invalid" *ngIf="submitted && !incentive.incentiveDate">Code is required.</small>
+          </div>
+          <div class="field">
+            <label for="description">Description *</label>
+            <input type="text" pInputText id="description" [(ngModel)]="incentive.description" required
+              [ngClass]="{'ng-invalid ng-dirty': submitted && !incentive.description}" />
+            <small class="ng-dirty ng-invalid" *ngIf="submitted && !incentive.description">Description is
+              required.</small>
+          </div>
+          <div class="field">
+            <label for="remark">remark *</label>
+            <input type="text" pInputText id="remark" [(ngModel)]="incentive.remark" required
+              [ngClass]="{'ng-invalid ng-dirty': submitted && !incentive.remark}" />
+            <small class="ng-dirty ng-invalid" *ngIf="submitted && !incentive.remark">remark is required.</small>
+          </div>
+          <div class="field">
+            <label for="amount">amount *</label>
+            <input type="text" pInputText id="amount" [(ngModel)]="incentive.amount" required
+              [ngClass]="{'ng-invalid ng-dirty': submitted && !incentive.amount}" />
+            <small class="ng-dirty ng-invalid" *ngIf="submitted && !incentive.amount">amount is required.</small>
+          </div>
+        </div>
+      </ng-template>
 
+      <ng-template pTemplate="footer">
+        <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
+        <button pButton pRipple label="Delete" icon="pi pi-trash" class="p-button-text"
+          (click)="deleteMenu(incentive)"></button>
+        <button pButton pRipple label="Save" icon="pi pi-check" (click)="savIncentive()"></button>
+      </ng-template>
+    </p-dialog>
   </div>
 </div>

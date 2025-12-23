@@ -12,7 +12,6 @@ import { ToastModule } from 'primeng/toast';
 import { MessagesModule } from 'primeng/messages';
 import { MessageService } from 'primeng/api';
 import { PrimeNgModule } from '../primeng.module';
-import { NgxExtendedPdfViewerModule } from 'ngx-extended-pdf-viewer';
 
 @NgModule({
   declarations: [
@@ -29,8 +28,7 @@ import { NgxExtendedPdfViewerModule } from 'ngx-extended-pdf-viewer';
     ButtonModule,
     InputTextModule,
     ToastModule,
-    MessagesModule,
-    NgxExtendedPdfViewerModule
+    MessagesModule
   ],
   providers: [
     MessageService
