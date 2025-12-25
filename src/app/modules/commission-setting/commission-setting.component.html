@@ -1,0 +1,113 @@
+<div class="grid">
+  <div class="col-12">
+    <div class="card p-fluid">
+      <h4>Therapist Incentive Hour Setting</h4>
+
+      <div class="grid">
+        <div class="col-12 lg:col-6">
+          <h5>Malaysian</h5>
+          <div class="card p-fluid">
+            <div class="grid">
+              <div class="col-12 lg:col-6">
+                <h5>Male</h5>
+                <div class="field">
+                  <label htmlFor="incentive_hour_mm">Target Hours</label>
+                  <input pInputText id="incentive_hour_mm" type="text" [(ngModel)]="INCENTIVE_HOURS_MM" />
+                </div>
+                <div class="field">
+                  <label htmlFor="incentive_amount_mm">Incentive (MYR)</label>
+                  <input pInputText id="incentive_amount_mm" type="text" [(ngModel)]="INCENTIVE_AMOUNT_MM" />
+                </div>
+              </div>
+
+              <div class="col-12 lg:col-6">
+                <h5>Female</h5>
+                <div class="field">
+                  <label htmlFor="incentive_hour_mm">Target Hours</label>
+                  <input pInputText id="incentive_hour_mm" type="text" [(ngModel)]="INCENTIVE_HOURS_MF" />
+                </div>
+                <div class="field">
+                  <label htmlFor="incentive_amount_mm">Incentive (MYR)</label>
+                  <input pInputText id="incentive_amount_mm" type="text" [(ngModel)]="INCENTIVE_AMOUNT_MF" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-12 lg:col-6">
+          <h5>Non Malaysian</h5>
+          <div class="card p-fluid">
+            <div class="grid">
+              <div class="col-12 lg:col-6">
+                <h5>Male</h5>
+                <div class="field">
+                  <label htmlFor="incentive_hour_mm">Target Hours</label>
+                  <input pInputText id="incentive_hour_mm" type="text" [(ngModel)]="INCENTIVE_HOURS_NMM" />
+                </div>
+                <div class="field">
+                  <label htmlFor="incentive_amount_mm">Incentive (MYR)</label>
+                  <input pInputText id="incentive_amount_mm" type="text" [(ngModel)]="INCENTIVE_AMOUNT_NMM" />
+                </div>
+              </div>
+              <div class="col-12 lg:col-6">
+                <h5>Female</h5>
+                <div class="field">
+                  <label htmlFor="incentive_hour_mm">Target Hours</label>
+                  <input pInputText id="incentive_hour_mm" type="text" [(ngModel)]="INCENTIVE_HOURS_NMF" />
+                </div>
+                <div class="field">
+                  <label htmlFor="incentive_amount_mm">Incentive (MYR)</label>
+                  <input pInputText id="incentive_amount_mm" type="text" [(ngModel)]="INCENTIVE_AMOUNT_NMF" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      <h4>Consultant Setting</h4>
+
+      <div class="grid">
+        <div class="col-12 lg:col-6">
+          <h5>Product</h5>
+          <div class="card p-fluid">
+            <div class="grid">
+              <div class="col-12 lg:col-6">
+                <div class="field">
+                  <label htmlFor="incentive_hour_mm">Target Amount</label>
+                  <input pInputText id="incentive_hour_mm" type="text" [(ngModel)]="PRODUCT_TARGET"/>
+                </div>
+              </div>
+              <div class="col-12 p-0 m-0" style="height:0;"></div>
+              <div class="col-12 lg:col-6 pt-0">
+                <div class="field">
+                  <label htmlFor="incentive_amount_mm">Before Target (%)</label>
+                  <input pInputText id="incentive_amount_mm" type="text" [(ngModel)]="PRODUCT_PERCENT_TIER_1"/>
+                </div>
+              </div>
+              <div class="col-12 lg:col-6 pt-0">
+                <div class="field">
+                  <label htmlFor="incentive_amount_mm">After Target (%)</label>
+                  <input pInputText id="incentive_amount_mm" type="text" [(ngModel)]="PRODUCT_PERCENT_TIER_2"/>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-12 lg:col-6">
+          <h5>Treatment</h5>
+          <div class="card p-fluid">
+            <div class="grid">
+              <div class="field col-12 md:col-6">
+                <label htmlFor="lastname2">% of Price</label>
+                <input pInputText id="lastname2" type="text" [(ngModel)]="TREATMENT_PERCENT"/>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>

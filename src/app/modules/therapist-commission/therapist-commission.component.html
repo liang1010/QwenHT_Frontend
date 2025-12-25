@@ -45,7 +45,7 @@
               *ngIf="commissionForm.get('period')?.touched && commissionForm.get('period')?.invalid && commissionForm.get('period')?.errors?.['required']"
               class="p-error">Period is required.</small>
           </div>
-          <div class="field-checkbox">
+          <div class="field-checkbox" *ngIf="commissionForm.get('period')?.value == 2">
             <p-checkbox id="incentive" formControlName="incentive" [binary]="true">
             </p-checkbox>
             <label for="incentive">Incentive</label>
@@ -196,8 +196,8 @@
 
           <tr style="line-height: 0.1 !important;" (dblclick)="editIncentive(item)">
             <td style="width: 10%;">{{ item.incentiveDate | date:'shortDate' }}</td>
-            <td style="width: 10%;"colspan="2">{{ item.description }}</td>
-            <td style="width: 10%;"colspan="2">{{ item.remark }}</td>
+            <td style="width: 10%;" colspan="2">{{ item.description }}</td>
+            <td style="width: 10%;" colspan="2">{{ item.remark }}</td>
             <td style="width: 10%;text-align: right;" *ngIf="therapistCommissionReport?.isCommissionPercentage"></td>
             <td style="width: 10%;text-align: right;" class="currency-cell">{{ item.amount == 0 ? '': item.amount |
               localCurrency }}</td>
