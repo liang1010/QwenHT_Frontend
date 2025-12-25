@@ -18,6 +18,9 @@ export class CommissionSettingService {
     return this.http.get<OptionValue[]>(`${this.apiUrl}/commission/setting`);
   }
 
+  updateOptionValues(optionValues: OptionValue[]): Observable<any> {
+    return this.http.post(`${this.apiUrl}/commission/setting/update`, optionValues);
+  }
 
   updateIncentive(id: string, menu: Incentive): Observable<Incentive> {
     return this.http.post<Incentive>(`${this.apiUrl}/commission/therapist/incentives/${id}`, menu);

@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 
 import { CommissionSettingRoutingModule } from './commission-setting-routing.module';
 import { PrimeNgModule } from '../primeng.module';
@@ -12,6 +13,7 @@ import { CommissionSettingComponent } from './commission-setting.component';
   ],
   imports: [
     CommonModule,
+    FormsModule,
     CommissionSettingRoutingModule,
     PrimeNgModule
   ]

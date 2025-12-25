@@ -1,4 +1,24 @@
 <div class="grid">
+
+  <div class="col-12">
+    <div class="card">
+      <div class="flex justify-content  gap-2">
+        <button *ngIf="!isEditing" pButton pRipple label="Edit" icon="pi pi-pencil" class="p-button-warning"
+          (click)="startEditing()">
+        </button>
+
+        <button *ngIf="isEditing" pButton pRipple label="Save" icon="pi pi-check" class="p-button-success"
+          (click)="saveChanges()">
+        </button>
+
+        <button *ngIf="isEditing" pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-secondary"
+          (click)="cancelEditing()">
+        </button>
+
+      </div>
+    </div>
+  </div>
+
   <div class="col-12">
     <div class="card p-fluid">
       <h4>Therapist Incentive Hour Setting</h4>
@@ -12,11 +32,13 @@
                 <h5>Male</h5>
                 <div class="field">
                   <label htmlFor="incentive_hour_mm">Target Hours</label>
-                  <input pInputText id="incentive_hour_mm" type="text" [(ngModel)]="INCENTIVE_HOURS_MM" />
+                  <input pInputText id="incentive_hour_mm" type="text" [(ngModel)]="INCENTIVE_HOURS_MM"
+                    [disabled]="!isEditing" />
                 </div>
                 <div class="field">
                   <label htmlFor="incentive_amount_mm">Incentive (MYR)</label>
-                  <input pInputText id="incentive_amount_mm" type="text" [(ngModel)]="INCENTIVE_AMOUNT_MM" />
+                  <input pInputText id="incentive_amount_mm" type="text" [(ngModel)]="INCENTIVE_AMOUNT_MM"
+                    [disabled]="!isEditing" />
                 </div>
               </div>
 
@@ -24,11 +46,13 @@
                 <h5>Female</h5>
                 <div class="field">
                   <label htmlFor="incentive_hour_mm">Target Hours</label>
-                  <input pInputText id="incentive_hour_mm" type="text" [(ngModel)]="INCENTIVE_HOURS_MF" />
+                  <input pInputText id="incentive_hour_mm" type="text" [(ngModel)]="INCENTIVE_HOURS_MF"
+                    [disabled]="!isEditing" />
                 </div>
                 <div class="field">
                   <label htmlFor="incentive_amount_mm">Incentive (MYR)</label>
-                  <input pInputText id="incentive_amount_mm" type="text" [(ngModel)]="INCENTIVE_AMOUNT_MF" />
+                  <input pInputText id="incentive_amount_mm" type="text" [(ngModel)]="INCENTIVE_AMOUNT_MF"
+                    [disabled]="!isEditing" />
                 </div>
               </div>
             </div>
@@ -43,22 +67,26 @@
                 <h5>Male</h5>
                 <div class="field">
                   <label htmlFor="incentive_hour_mm">Target Hours</label>
-                  <input pInputText id="incentive_hour_mm" type="text" [(ngModel)]="INCENTIVE_HOURS_NMM" />
+                  <input pInputText id="incentive_hour_mm" type="text" [(ngModel)]="INCENTIVE_HOURS_NMM"
+                    [disabled]="!isEditing" />
                 </div>
                 <div class="field">
                   <label htmlFor="incentive_amount_mm">Incentive (MYR)</label>
-                  <input pInputText id="incentive_amount_mm" type="text" [(ngModel)]="INCENTIVE_AMOUNT_NMM" />
+                  <input pInputText id="incentive_amount_mm" type="text" [(ngModel)]="INCENTIVE_AMOUNT_NMM"
+                    [disabled]="!isEditing" />
                 </div>
               </div>
               <div class="col-12 lg:col-6">
                 <h5>Female</h5>
                 <div class="field">
                   <label htmlFor="incentive_hour_mm">Target Hours</label>
-                  <input pInputText id="incentive_hour_mm" type="text" [(ngModel)]="INCENTIVE_HOURS_NMF" />
+                  <input pInputText id="incentive_hour_mm" type="text" [(ngModel)]="INCENTIVE_HOURS_NMF"
+                    [disabled]="!isEditing" />
                 </div>
                 <div class="field">
                   <label htmlFor="incentive_amount_mm">Incentive (MYR)</label>
-                  <input pInputText id="incentive_amount_mm" type="text" [(ngModel)]="INCENTIVE_AMOUNT_NMF" />
+                  <input pInputText id="incentive_amount_mm" type="text" [(ngModel)]="INCENTIVE_AMOUNT_NMF"
+                    [disabled]="!isEditing" />
                 </div>
               </div>
             </div>
@@ -77,20 +105,23 @@
               <div class="col-12 lg:col-6">
                 <div class="field">
                   <label htmlFor="incentive_hour_mm">Target Amount</label>
-                  <input pInputText id="incentive_hour_mm" type="text" [(ngModel)]="PRODUCT_TARGET"/>
+                  <input pInputText id="incentive_hour_mm" type="text" [(ngModel)]="PRODUCT_TARGET"
+                    [disabled]="!isEditing" />
                 </div>
               </div>
               <div class="col-12 p-0 m-0" style="height:0;"></div>
               <div class="col-12 lg:col-6 pt-0">
                 <div class="field">
                   <label htmlFor="incentive_amount_mm">Before Target (%)</label>
-                  <input pInputText id="incentive_amount_mm" type="text" [(ngModel)]="PRODUCT_PERCENT_TIER_1"/>
+                  <input pInputText id="incentive_amount_mm" type="text" [(ngModel)]="PRODUCT_PERCENT_TIER_1"
+                    [disabled]="!isEditing" />
                 </div>
               </div>
               <div class="col-12 lg:col-6 pt-0">
                 <div class="field">
                   <label htmlFor="incentive_amount_mm">After Target (%)</label>
-                  <input pInputText id="incentive_amount_mm" type="text" [(ngModel)]="PRODUCT_PERCENT_TIER_2"/>
+                  <input pInputText id="incentive_amount_mm" type="text" [(ngModel)]="PRODUCT_PERCENT_TIER_2"
+                    [disabled]="!isEditing" />
                 </div>
               </div>
             </div>
@@ -103,7 +134,7 @@
             <div class="grid">
               <div class="field col-12 md:col-6">
                 <label htmlFor="lastname2">% of Price</label>
-                <input pInputText id="lastname2" type="text" [(ngModel)]="TREATMENT_PERCENT"/>
+                <input pInputText id="lastname2" type="text" [(ngModel)]="TREATMENT_PERCENT" [disabled]="!isEditing" />
               </div>
             </div>
           </div>
@@ -111,3 +142,6 @@
       </div>
     </div>
   </div>
+</div>
+
+<p-toast></p-toast>
