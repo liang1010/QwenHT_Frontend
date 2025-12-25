@@ -61,4 +61,8 @@ export class TherapistCommissionService {
     return this.http.post(`${this.apiUrl}/commission/therapist/incentives/${id}/delete`, {});
   }
 
+  getOptionValuesByCategory(category: string): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/optionvalues?category=${category}`);
+  }
+
 }

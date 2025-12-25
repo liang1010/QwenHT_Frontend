@@ -234,33 +234,35 @@
 
     </div>
     <p-dialog [(visible)]="incentiveDialog" [style]="{width: '500px', 'max-height': '600px', 'overflow': 'auto' }"
-      header="Menu Details" [modal]="true" class="p-fluid">
+      header="Incentive Details" [modal]="true" class="p-fluid">
       <ng-template pTemplate="content">
         <div class="p-4">
           <div class="field">
-            <label for="code">Code *</label>
-            <input type="text" pInputText id="code" [(ngModel)]="incentive.incentiveDate" required
-              [ngClass]="{'ng-invalid ng-dirty': submitted && !incentive.incentiveDate}" />
-            <small class="ng-dirty ng-invalid" *ngIf="submitted && !incentive.incentiveDate">Code is required.</small>
+            <label for="incentiveDate">Incentive Date *</label>
+            <p-calendar id="incentiveDate" [(ngModel)]="incentive.incentiveDate" [showIcon]="true"
+              require [disabled]="true"  [ngClass]="{'ng-invalid ng-dirty': submitted && !incentive.incentiveDate}">
+            </p-calendar>
+            <small class="ng-dirty ng-invalid" *ngIf="submitted && !incentive.incentiveDate">Incentive Date is required.</small>
           </div>
           <div class="field">
-            <label for="description">Description *</label>
-            <input type="text" pInputText id="description" [(ngModel)]="incentive.description" required
-              [ngClass]="{'ng-invalid ng-dirty': submitted && !incentive.description}" />
-            <small class="ng-dirty ng-invalid" *ngIf="submitted && !incentive.description">Description is
-              required.</small>
+            <label for="description">Type *</label>
+            <p-dropdown id="description" [(ngModel)]="incentive.description" [options]="incentiveTypeOptions"
+              optionLabel="label" optionValue="value" placeholder="Select Type"
+              require [ngClass]="{'ng-invalid ng-dirty': submitted && !incentive.description}">
+            </p-dropdown>
+            <small class="ng-dirty ng-invalid" *ngIf="submitted && !incentive.description">Type is required.</small>
           </div>
           <div class="field">
-            <label for="remark">remark *</label>
+            <label for="remark">Remark *</label>
             <input type="text" pInputText id="remark" [(ngModel)]="incentive.remark" required
               [ngClass]="{'ng-invalid ng-dirty': submitted && !incentive.remark}" />
-            <small class="ng-dirty ng-invalid" *ngIf="submitted && !incentive.remark">remark is required.</small>
+            <small class="ng-dirty ng-invalid" *ngIf="submitted && !incentive.remark">Remark is required.</small>
           </div>
           <div class="field">
-            <label for="amount">amount *</label>
+            <label for="amount">Amount *</label>
             <input type="text" pInputText id="amount" [(ngModel)]="incentive.amount" required
               [ngClass]="{'ng-invalid ng-dirty': submitted && !incentive.amount}" />
-            <small class="ng-dirty ng-invalid" *ngIf="submitted && !incentive.amount">amount is required.</small>
+            <small class="ng-dirty ng-invalid" *ngIf="submitted && !incentive.amount">Amount is required.</small>
           </div>
         </div>
       </ng-template>

@@ -15,6 +15,7 @@ import { Incentive } from '../../models/incentives';
 export class TherapistCommissionComponent implements OnInit {
   commissionForm: FormGroup;
   staffOptions: Staff[] = [];
+  incentiveTypeOptions: any[] = [];
   loading = false;
   pdfSrc: SafeUrl | null = null;
   pdfUrl: string | null = null;
@@ -40,6 +41,7 @@ export class TherapistCommissionComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadStaff();
+    this.loadIncentiveTypeOptions();
     this.commissionForm.valueChanges.subscribe(x => {
       this.commissionData = [];
       this.incentiveData = [];
@@ -69,6 +71,26 @@ export class TherapistCommissionComponent implements OnInit {
           severity: 'error',
           summary: 'Error',
           detail: 'Failed to load staff',
+          life: 3000
+        });
+      }
+    });
+  }
+
+  loadIncentiveTypeOptions(): void {
+    this.therapistCommissionService.getOptionValuesByCategory('IncentiveType').subscribe({
+      next: (data) => {
+        this.incentiveTypeOptions = data.map(option => ({
+          label: option.value,
+          value: option.value
+        }));
+      },
+      error: (error) => {
+        console.error('Error loading incentive type options:', error);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Failed to load incentive types',
           life: 3000
         });
       }
@@ -237,7 +259,8 @@ export class TherapistCommissionComponent implements OnInit {
   submitted = false;
   newIncentive() {
     this.incentive = {
-      status: 1, // Defau
+      status: 1, // Default status
+      incentiveDate: new Date() // Initialize with current date for the calendar
     };
     this.submitted = false;
     this.incentiveDialog = true;
@@ -252,6 +275,10 @@ export class TherapistCommissionComponent implements OnInit {
     }
     if (this.incentive.lastUpdated) {
       this.incentive.lastUpdated = new Date(this.incentive.lastUpdated);
+    }
+    if (this.incentive.incentiveDate) {
+      // Ensure the date is properly formatted for the calendar component
+      this.incentive.incentiveDate = new Date(this.incentive.incentiveDate);
     }
     this.incentiveDialog = true;
   }
@@ -306,10 +333,11 @@ export class TherapistCommissionComponent implements OnInit {
     const staffId = formValue.staff;
     this.submitted = true;
 
+    // Use the selected date from the calendar, or default to the end date if not selected
     this.incentive.incentiveDate = endDate;
     this.incentive.staffId = staffId;
     // Validate required fields
-    if (this.incentive.description?.trim() && this.incentive.remark?.trim() && this.incentive.amount !== undefined) {
+    if (this.incentive.description && this.incentive.remark?.trim() && this.incentive.amount !== undefined) {
       if (this.incentive.id) {
         // Update existing menu
         this.therapistCommissionService.updateIncentive(this.incentive.id, this.incentive).subscribe({
@@ -364,7 +392,7 @@ export class TherapistCommissionComponent implements OnInit {
       this.messageService.add({
         severity: 'error',
         summary: 'Error',
-        detail: 'Code, Description, Category, and Price are required fields',
+        detail: 'Type, Remark, and Amount are required fields',
         life: 3000
       });
     }
