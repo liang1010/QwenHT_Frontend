@@ -9,6 +9,7 @@ import { MessageService } from 'primeng/api';
   styleUrl: './commission-setting.component.scss'
 })
 export class CommissionSettingComponent {
+  title = "Commission"
   INCENTIVE_AMOUNT_MF: any;
   INCENTIVE_AMOUNT_NMM: any;
   INCENTIVE_HOURS_MF: any;

@@ -1,6 +1,6 @@
 {
-  "name": "qwen-prime-ng-ht",
-  "version": "0.0.0",
+  "name": "monsters",
+  "version": "1.0.1",
   "scripts": {
     "ng": "ng",
     "start": "ng config cli.cache.enabled false && ng serve",

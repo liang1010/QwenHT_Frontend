@@ -8,7 +8,7 @@ import { ProgressBarService } from './services/progress-bar.service';
   styleUrl: './app.component.scss'
 })
 export class AppComponent {
-  title = 'Qwen-PrimeNg-HT';
+  title = 'Monster S';
   showProgressBar = false;
   constructor(private progressBarService: ProgressBarService) { }
 
