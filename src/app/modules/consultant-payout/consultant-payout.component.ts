@@ -7,6 +7,7 @@ import { Incentive } from '../../models/incentives';
 import { ConsultantPayoutReportDto } from './consultant-payout.model';
 import { ConsultantCommissionService } from './consultant-payout.service';
 import { Table } from 'primeng/table';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-consultant-payout',
@@ -27,7 +28,8 @@ export class ConsultantPayoutComponent implements OnInit {
     private fb: FormBuilder,
     private consultantPayoutService: ConsultantCommissionService,
     private messageService: MessageService,
-    private sanitizer: DomSanitizer
+    private sanitizer: DomSanitizer,
+    private datePipe:DatePipe
   ) {
     this.commissionForm = this.createForm();
   }
@@ -55,6 +57,8 @@ export class ConsultantPayoutComponent implements OnInit {
   totalProductCommission = 0;
   totalTreatmentCommission = 0;
   totalPayout = 0;
+
+
   generatePdf(): void {
     if (this.commissionForm.invalid) {
       this.messageService.add({
@@ -84,8 +88,14 @@ export class ConsultantPayoutComponent implements OnInit {
       .subscribe({
         next: (response: ConsultantPayoutReportDto[]) => {
           this.therapistCommissionReport = response;
-          // Store the data for table display - accessing the Commissions property from the full response
-          this.dataSource = response || [];
+          // Transform the data to match the expected export format with flattened fields
+          this.dataSource = (response || []).map(item => ({
+            ...item,
+            date: this.datePipe.transform(this.endDate,'dd/MM/yyyy'),
+            product: item.commissionPercentage?.totalProductCommission || 0,
+            treatment: item.commissionPercentage?.totalTreatmentCommission || 0,
+            total: item.totalPayout || 0
+          }));
           this.totalProductCommission = response
             .reduce((sum, x) => sum + (x.commissionPercentage?.totalProductCommission || 0), 0);
           this.totalTreatmentCommission = response
