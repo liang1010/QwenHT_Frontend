@@ -49,7 +49,7 @@ import { LoggedInGuard } from './guards/logged-in.guard';
             children: [
               {
                 path: 'therapist',
-                loadChildren: () => import('./modules/therapist-commission/therapist-commission.module').then(m => m.TherapistCommissionModule)
+                loadChildren: () => import('./modules/therapist-payout/therapist-payout.module').then(m => m.TherapistPayoutModule)
               },
               {
                 path: 'consultant',

@@ -124,7 +124,7 @@ export class TherapistCommissionComponent implements OnInit {
     const endDate = this.calculatePeriodEndDate(year, month, period);
 
     // Get the data from the backend to generate the PDF
-    this.therapistCommissionService.getTherapistCommission(staffId, startDate, endDate,incentive)
+    this.therapistCommissionService.getTherapistCommission(staffId, startDate, endDate, incentive)
       .subscribe({
         next: (response) => {
           this.therapistCommissionReport = response;
@@ -137,6 +137,55 @@ export class TherapistCommissionComponent implements OnInit {
           const selectedStaff = this.staffOptions.find(s => s.id === staffId);
           const staffName = selectedStaff ? (selectedStaff.nickName || selectedStaff.fullName || 'Unknown') : 'Unknown';
 
+          this.loading = false;
+        },
+        error: (error) => {
+          console.error('Error fetching therapist commission data:', error);
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Failed to fetch data for PDF',
+            life: 3000
+          });
+          this.loading = false;
+        }
+      });
+  }
+
+  sendToPayout(): void {
+    if (this.commissionForm.invalid) {
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Validation Error',
+        detail: 'Please fill in all required fields',
+        life: 3000
+      });
+      return;
+    }
+
+    this.loading = true;
+    const formValue = this.commissionForm.value;
+
+    const staffId = formValue.staff;
+    const year = formValue.year;
+    const month = formValue.month;
+    const period = formValue.period;
+    const incentive = formValue.incentive;
+
+    // Calculate start and end dates based on the selected period
+    const startDate = this.calculatePeriodStartDate(year, month, period);
+    const endDate = this.calculatePeriodEndDate(year, month, period);
+
+    // Get the data from the backend to generate the PDF
+    this.therapistCommissionService.insertTherapistPayout(staffId, startDate, endDate)
+      .subscribe({
+        next: (response) => {
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Successful',
+            detail: 'Sent to Payout',
+            life: 3000
+          });
           this.loading = false;
         },
         error: (error) => {

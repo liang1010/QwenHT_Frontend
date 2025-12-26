@@ -24,12 +24,25 @@ export class TherapistCommissionService {
       staffId: staffId,
       startDate: startDate.toISOString(),
       endDate: endDate.toISOString(),
-      incentive:incentive.toString()
+      incentive: incentive.toString()
     });
 
     return this.http.get<TherapistCommissionReportDto>(`${this.apiUrl}/commission/therapist?${params.toString()}`);
   }
 
+  insertTherapistPayout(
+    staffId: string,
+    startDate: Date,
+    endDate: Date
+  ): Observable<any> { // Using any temporarily until we define the full response type
+    const params = new URLSearchParams({
+      staffId: staffId,
+      startDate: startDate.toISOString(),
+      endDate: endDate.toISOString()
+    });
+
+    return this.http.get<TherapistCommissionReportDto>(`${this.apiUrl}/commission/therapist/insertPayout?${params.toString()}`);
+  }
   getStaff(): Observable<Staff[]> {
     return this.http.get<Staff[]>(`${this.apiUrl}/commission/therapist/staff/active`);
   }

@@ -1,7 +1,7 @@
 <div class="therapist-commission-container">
   <div class="card">
     <p-toast></p-toast>
-    <h3>Consultant Commission</h3>
+    <h3>Consultant Payout</h3>
 
     <!-- Filter Section -->
     <div class="filter-section">
@@ -41,7 +41,6 @@
 
     <!-- Data Table Section -->
     <div class="table-section" *ngIf="displayTable">
-      <h4>Product</h4>
       <button pButton pRipple label="Export" icon="pi pi-upload" class="p-button-help"
         (click)="dt.exportCSV()"></button>
       <p-table exportFilename='consultant-payout' #dt [value]="dataSource" [showCurrentPageReport]="true"
@@ -72,7 +71,8 @@
         </ng-template>
         <ng-template pTemplate="footer">
           <tr>
-            <td colspan="3" style="width: 47%; text-align: right;"><strong>Totals:</strong></td>
+            <td colspan="2" style="width: 47%; text-align: right;"><strong>Totals:</strong></td>
+            <td class="currency-cell"><strong>{{ dataSource.length}}</strong></td>
             <td class="currency-cell"><strong>{{ totalProductCommission | localCurrency}}</strong></td>
             <td class="currency-cell"><strong>{{ totalTreatmentCommission | localCurrency}}</strong></td>
             <td class="currency-cell"><strong>{{ totalPayout | localCurrency }}</strong></td>

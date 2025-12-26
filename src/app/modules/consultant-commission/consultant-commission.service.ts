@@ -24,10 +24,24 @@ export class ConsultantCommissionService {
       staffId: staffId,
       startDate: startDate.toISOString(),
       endDate: endDate.toISOString(),
-      incentive:incentive.toString()
+      incentive: incentive.toString()
     });
 
     return this.http.get<ConsultantCommissionReportDto>(`${this.apiUrl}/commission/consultant?${params.toString()}`);
+  }
+
+  insertConsultantPayout(
+    staffId: string,
+    startDate: Date,
+    endDate: Date
+  ): Observable<any> { // Using any temporarily until we define the full response type
+    const params = new URLSearchParams({
+      staffId: staffId,
+      startDate: startDate.toISOString(),
+      endDate: endDate.toISOString()
+    });
+
+    return this.http.get<[]>(`${this.apiUrl}/commission/consultant/insertPayout?${params.toString()}`);
   }
 
   getStaff(): Observable<Staff[]> {
