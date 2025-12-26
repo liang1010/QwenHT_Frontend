@@ -1,0 +1,89 @@
+<div class="therapist-commission-container">
+  <div class="card">
+    <p-toast></p-toast>
+    <h3>Consultant Commission</h3>
+
+    <!-- Filter Section -->
+    <div class="filter-section">
+      <form [formGroup]="commissionForm" class="p-fluid">
+        <div class="form-row">
+          <div class="field">
+            <label for="year">Year</label>
+            <p-dropdown id="year" formControlName="year" [options]="[2024, 2025, 2026, 2027, 2028, 2029, 2030]"
+              placeholder="Select Year">
+            </p-dropdown>
+            <small *ngIf="commissionForm.get('year')?.invalid && commissionForm.get('year')?.errors?.['required']"
+              class="p-error">Year is required.</small>
+          </div>
+          <div class="field">
+            <label for="month">Month</label>
+            <p-dropdown id="month" formControlName="month"
+              [options]="[{label: 'January', value: 1}, {label: 'February', value: 2}, {label: 'March', value: 3},
+                         {label: 'April', value: 4}, {label: 'May', value: 5}, {label: 'June', value: 6},
+                         {label: 'July', value: 7}, {label: 'August', value: 8}, {label: 'September', value: 9},
+                         {label: 'October', value: 10}, {label: 'November', value: 11}, {label: 'December', value: 12}]" optionLabel="label" optionValue="value"
+              placeholder="Select Month">
+            </p-dropdown>
+            <small *ngIf="commissionForm.get('month')?.invalid && commissionForm.get('month')?.errors?.['required']"
+              class="p-error">Month is required.</small>
+          </div>
+          <div class="field-buttons">
+            <button type="button" pButton pRipple label="Search" icon="pi pi-file-pdf" class="p-button-primary"
+              (click)="generatePdf()" [disabled]="commissionForm.invalid || loading">
+              <i *ngIf="loading" class="pi pi-spin pi-spinner" style="margin-left: 0.5rem;"></i>
+            </button>
+
+
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <!-- Data Table Section -->
+    <div class="table-section" *ngIf="displayTable">
+      <h4>Product</h4>
+      <button pButton pRipple label="Export" icon="pi pi-upload" class="p-button-help"
+        (click)="dt.exportCSV()"></button>
+      <p-table #dt [value]="dataSource" [showCurrentPageReport]="true" [scrollable]="true" [rowHover]="true" responsiveLayout="scroll"
+        [columns]="[{field: 'Date'},{field: 'Nick Name'},{field: 'Full Name'},{field: 'Product'},{field: 'Treatment'},{field: 'Total'}]"  dataKey="id">
+        <ng-template pTemplate="header">
+          <tr style=" ">
+            <th style="width: 10%;">Date</th>
+            <th style="width: 10%;">Nick Name</th>
+            <th style="width: 10%;">Full Name</th>
+            <th style="width: 10%;text-align: right;">Product</th>
+            <th style="width: 10%;text-align: right;">Treatment</th>
+            <th style="width: 10%;text-align: right;">Total</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-item >
+
+          <tr>
+            <td> {{ endDate | date:'shortDate' }}</td>
+            <td>{{ item.nickName }}</td>
+            <td>{{ item.fullName }}</td>
+            <td class="currency-cell">{{ item.commissionPercentage.totalProductCommission == 0 ? 0:
+              item.commissionPercentage.totalProductCommission | localCurrency }}</td>
+            <td class="currency-cell">{{ item.commissionPercentage.totalTreatmentCommission == 0 ? 0:
+              item.commissionPercentage.totalTreatmentCommission | localCurrency }}</td>
+            <td class="currency-cell">{{ item.totalPayout == 0 ? 0:item.totalPayout | localCurrency }}</td>
+
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="footer">
+          <tr>
+            <td colspan="3" style="width: 47%; text-align: right;"><strong>Totals:</strong></td>
+            <td class="currency-cell"><strong>{{ totalProductCommission | localCurrency}}</strong></td>
+            <td class="currency-cell"><strong>{{ totalTreatmentCommission | localCurrency}}</strong></td>
+            <td class="currency-cell"><strong>{{ totalPayout | localCurrency }}</strong></td>
+
+          </tr>
+        </ng-template>
+      </p-table>
+
+
+
+    </div>
+
+  </div>
+</div>

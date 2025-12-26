@@ -1,0 +1,50 @@
+.therapist-commission-container {
+  padding: 1rem;
+  height: 100%;
+
+  .card {
+    padding: 1.5rem;
+  }
+
+  .filter-section {
+    margin-bottom: 1.5rem;
+
+    .form-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+
+      .field {
+        flex: 1;
+        min-width: 200px;
+      }
+
+      .field-buttons {
+        display: flex;
+        gap: 0.5rem;
+        align-items: flex-end;
+        min-width: 180px;
+      }
+    }
+  }
+
+  .pdf-section {
+    margin-top: 1.5rem;
+
+    .pdf-container {
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      overflow: hidden;
+      margin-top: 0.5rem;
+      height: 800px;
+
+      ::ng-deep .pdfViewerContainer {
+        height: 100%;
+
+        .textLayer {
+          background-color: #f9f9f9;
+        }
+      }
+    }
+  }
+}
