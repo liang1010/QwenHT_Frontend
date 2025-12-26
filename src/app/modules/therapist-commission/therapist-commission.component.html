@@ -1,7 +1,7 @@
 <div class="therapist-commission-container">
   <div class="card">
     <p-toast></p-toast>
-    <h3>Therapist Commission PDF Report</h3>
+    <h3>Therapist Commission</h3>
 
     <!-- Filter Section -->
     <div class="filter-section">
@@ -66,7 +66,7 @@
 
     <!-- Data Table Section -->
     <div class="table-section" *ngIf="displayTable">
-      <h4>Commission Data</h4>
+      <h4>Sales</h4>
       <p-table [value]="commissionData" [showCurrentPageReport]="true" [scrollable]="true">
         <ng-template pTemplate="header">
           <tr style="line-height: 0.1 !important;">

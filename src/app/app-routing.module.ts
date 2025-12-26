@@ -37,6 +37,10 @@ import { LoggedInGuard } from './guards/logged-in.guard';
                 loadChildren: () => import('./modules/therapist-commission/therapist-commission.module').then(m => m.TherapistCommissionModule)
               },
               {
+                path: 'consultant',
+                loadChildren: () => import('./modules/consultant-commission/consultant-commission.module').then(m => m.ConsultantCommissionModule)
+              },
+              {
                 path: 'setting',
                 loadChildren: () => import('./modules/commission-setting/commission-setting.module').then(m => m.CommissionSettingModule)
               }]

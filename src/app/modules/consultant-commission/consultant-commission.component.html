@@ -1,0 +1,186 @@
+<div class="therapist-commission-container">
+  <div class="card">
+    <p-toast></p-toast>
+    <h3>Consultant Commission</h3>
+
+    <!-- Filter Section -->
+    <div class="filter-section">
+      <form [formGroup]="commissionForm" class="p-fluid">
+        <div class="form-row">
+          <div class="field">
+            <label for="staff">Staff *</label>
+            <p-dropdown id="staff" formControlName="staff" [options]="staffOptions" optionLabel="nickName"
+              optionValue="id" placeholder="Select Staff">
+            </p-dropdown>
+            <small
+              *ngIf="commissionForm.get('staff')?.touched &&commissionForm.get('staff')?.invalid && commissionForm.get('staff')?.errors?.['required']"
+              class="p-error">Staff is required.</small>
+          </div>
+          <div class="field">
+            <label for="year">Year</label>
+            <p-dropdown id="year" formControlName="year" [options]="[2024, 2025, 2026, 2027, 2028, 2029, 2030]"
+              placeholder="Select Year">
+            </p-dropdown>
+            <small *ngIf="commissionForm.get('year')?.invalid && commissionForm.get('year')?.errors?.['required']"
+              class="p-error">Year is required.</small>
+          </div>
+          <div class="field">
+            <label for="month">Month</label>
+            <p-dropdown id="month" formControlName="month"
+              [options]="[{label: 'January', value: 1}, {label: 'February', value: 2}, {label: 'March', value: 3},
+                         {label: 'April', value: 4}, {label: 'May', value: 5}, {label: 'June', value: 6},
+                         {label: 'July', value: 7}, {label: 'August', value: 8}, {label: 'September', value: 9},
+                         {label: 'October', value: 10}, {label: 'November', value: 11}, {label: 'December', value: 12}]" optionLabel="label" optionValue="value"
+              placeholder="Select Month">
+            </p-dropdown>
+            <small *ngIf="commissionForm.get('month')?.invalid && commissionForm.get('month')?.errors?.['required']"
+              class="p-error">Month is required.</small>
+          </div>
+          <div class="field-buttons">
+            <button type="button" pButton pRipple label="Search" icon="pi pi-file-pdf" class="p-button-primary"
+              (click)="generatePdf()" [disabled]="commissionForm.invalid || loading">
+              <i *ngIf="loading" class="pi pi-spin pi-spinner" style="margin-left: 0.5rem;"></i>
+            </button>
+
+            <button type="button" pButton pRipple label="PDF" icon="pi pi-download" class="p-button-success"
+              (click)="downloadPdfFromBackend()">
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <!-- Data Table Section -->
+    <div class="table-section" *ngIf="displayTable">
+      <h4>Product</h4>
+      <p-table [value]="productData" [showCurrentPageReport]="true" [scrollable]="true">
+        <ng-template pTemplate="header">
+          <tr style="line-height: 0.1 !important;">
+            <th style="width: 10%;">Sales Date</th>
+            <th style="width: 10%;">Menu Code</th>
+            <th style="width: 10%;text-align: right;">Extra Commission</th>
+            <th style="width: 10%;text-align: right;">Price
+            </th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-item let-rowIndex="rowIndex">
+          <tr *ngIf="rowIndex > 0 && productData[rowIndex - 1].salesDate   !== item.salesDate "
+            style="line-height: 0.1 !important;">
+            <td [colSpan]=" 7 "></td>
+          </tr>
+
+          <tr style="line-height: 0.1 !important;">
+            <td>{{ item.salesDate | date:'shortDate' }}</td>
+            <td>{{ item.menuCode }}</td>
+            <td class="currency-cell">{{ item.extraCommission == 0 ? '': item.extraCommission | localCurrency }}</td>
+            <td class="currency-cell">{{ item.price == 0 ? '':
+              item.price | localCurrency }}</td>
+
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="footer">
+          <tr style="line-height: 0.1 !important;">
+            <td><strong>TOTALS</strong></td>
+
+            <td>
+            </td>
+            <td class="currency-cell">
+              <strong>{{therapistCommissionReport?.commissionPercentage?.totalProductExtraCommission | localCurrency}}
+              </strong>
+            </td>
+            <td class="currency-cell">
+              <strong>{{therapistCommissionReport?.commissionPercentage?.totalProductPrice | localCurrency}} </strong>
+            </td>
+          </tr>
+
+
+          <tr style="line-height: 0.1 !important;">
+            <td style="width: 10%;"> </td>
+            <td style="width: 10%; text-align: right;"><strong>Total Sales :
+                {{therapistCommissionReport?.commissionPercentage?.productPercentage}}%</strong> </td>
+            <td style="width: 10%; text-align: right;">
+              <strong>Total Commission : </strong>
+            </td>
+            <td style="width: 10%;" class="currency-cell">
+              <strong>{{therapistCommissionReport?.commissionPercentage?.totalProductCommission | localCurrency}}
+              </strong>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+
+
+
+    </div>
+    <div class="table-section" *ngIf="displayTable">
+      <h4>Treatment</h4>
+      <p-table [value]="treatmentData" [showCurrentPageReport]="true" [scrollable]="true">
+        <ng-template pTemplate="header">
+          <tr style="line-height: 0.1 !important;">
+            <th style="width: 10%;">Sales Date</th>
+            <th style="width: 10%;">Menu Code</th>
+            <th style="width: 10%;text-align: right;">Extra Commission</th>
+            <th style="width: 10%;text-align: right;">Price
+            </th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-item let-rowIndex="rowIndex">
+          <tr *ngIf="rowIndex > 0 && treatmentData[rowIndex - 1].salesDate   !== item.salesDate "
+            style="line-height: 0.1 !important;">
+            <td [colSpan]=" 7 "></td>
+          </tr>
+
+          <tr style="line-height: 0.1 !important;">
+            <td>{{ item.salesDate | date:'shortDate' }}</td>
+            <td>{{ item.menuCode }}</td>
+            <td class="currency-cell">{{ item.extraCommission == 0 ? '': item.extraCommission | localCurrency }}</td>
+            <td class="currency-cell">{{ item.price == 0 ? '':
+              item.price | localCurrency }}</td>
+
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="footer">
+          <tr style="line-height: 0.1 !important;">
+            <td><strong>TOTALS</strong></td>
+
+            <td>
+            </td>
+            <td class="currency-cell">
+              <strong>{{therapistCommissionReport?.commissionPercentage?.totalTreatmentExtraCommission | localCurrency}}
+              </strong>
+            </td>
+            <td class="currency-cell">
+              <strong>{{therapistCommissionReport?.commissionPercentage?.totalTreatmentPrice | localCurrency}} </strong>
+            </td>
+          </tr>
+
+
+          <tr style="line-height: 0.1 !important;">
+            <td style="width: 10%;"> </td>
+            <td style="width: 10%; text-align: right;"><strong>Total Sales :
+                {{therapistCommissionReport?.commissionPercentage?.treatmentPercentage}}%</strong> </td>
+            <td style="width: 10%; text-align: right;">
+              <strong>Total Commission : </strong>
+            </td>
+            <td style="width: 10%;" class="currency-cell">
+              <strong>{{therapistCommissionReport?.commissionPercentage?.totalTreatmentCommission | localCurrency}}
+              </strong>
+            </td>
+          </tr>
+
+          <tr style="line-height: 0.1 !important;">
+
+            <td [colSpan]=" 3" style="width: 47%; text-align: right;"><strong>Total Payout : </strong></td>
+            <td class="currency-cell">
+              <strong>{{therapistCommissionReport?.totalPayout | localCurrency}} </strong>
+            </td>
+          </tr>
+
+        </ng-template>
+      </p-table>
+
+
+
+    </div>
+  </div>
+</div>
