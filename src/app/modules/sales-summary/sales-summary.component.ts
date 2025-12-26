@@ -78,8 +78,16 @@ export class SalesSummaryComponent implements OnInit {
     this.loading = true;
     const formValue = this.summaryForm.value;
 
-    const startDate = formValue.dateRange[0];
-    const endDate = formValue.dateRange[1];
+    let startDate = formValue.dateRange[0];
+    let endDate = formValue.dateRange[1];
+    if (formValue.dateRange && formValue.dateRange[0]) {
+      startDate = formValue.dateRange[0];
+      if (formValue.dateRange[1])
+        endDate = formValue.dateRange[1];
+      else if (!formValue.dateRange[1])
+        endDate = formValue.dateRange[0];
+    }
+
     const category = formValue.category;
     const outlet = formValue.outlet;
 
